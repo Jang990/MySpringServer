@@ -1,0 +1,40 @@
+plugins {
+	id 'java'
+	/*id 'org.springframework.boot' version '3.5.9'
+	id 'io.spring.dependency-management' version '1.1.7'*/
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+//	implementation 'org.springframework.boot:spring-boot-starter'
+
+	// starter를 안쓰기 때문에 버전을 명시적으로 설정
+	runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
+	// JUnit 5 (테스트 프레임워크) 순수 자바 테스트는 junit-jupiter만 있으면 충분
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+
+	// 테스트 런처 (IDE나 Gradle이 테스트를 실행할 때 필요)
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// (선택) AssertJ: JUnit의 기본 assertion보다 더 직관적인 테스트 작성
+	testImplementation 'org.assertj:assertj-core:3.25.3'
+
+//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
