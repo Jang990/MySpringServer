@@ -1,10 +1,6 @@
 # 비즈니스 요구사항
 ✅ 실습용 비즈니스 도메인: 주문 시스템 (Order System)
 
-## 목표
-“JDBC 지옥 → JdbcTemplate 필요성 → 트랜잭션 없으면 서비스 박살”
-이걸 몸으로 느끼게 만드는 도메인.
-
 ## 기본 도메인
 
 ### 1. 사용자 (User)
@@ -53,24 +49,21 @@
 
 ## 기능 요구사항
 
-### 1️⃣ 사용자 생성
-`POST /users`
+### 1️⃣ 사용자 API
+* `POST /users` - 사용자 생성
+* `GET /users/{userId}` - 사용자 조회
 
-### 2️⃣ 가게 생성
-`POST /stores`
+### 2️⃣ 가게 API
+* `POST /stores` - 가게 생성
+* `GET /stores/{storeId}` - 가게 조회
 
-### 3️⃣ 음식 등록
-`POST /stores/{storeId}/foods`
-
-### 4️⃣ 음식 조회
-`GET /stores/{storeId}/foods`
-
-### 5️⃣ 주문 생성 (핵심)
-`POST /orders`
-
-
-요청 예
+### 3️⃣ 음식 API
+* `POST /stores/{storeId}/foods` - 음식 등록
+* `GET /stores/{storeId}/foods` - 음식 조회
+### 4️⃣ 주문 API
+* `POST /orders` - 주문 생성 (핵심)
 ```json
+// 요청 예
 {
     "userId": 1,
     "items": [
@@ -79,16 +72,6 @@
     ]
 }
 ```
+음식 재고 감소, 사용자 돈 감소 , 주문 + 주문 아이템 insert 👉 트랜잭션 없으면 반드시 깨진다.
 
-음식 재고 감소
-
-사용자 돈 감소
-
-주문 + 주문 아이템 insert
-
-👉 트랜잭션 없으면 반드시 깨진다.
-
-### 6️⃣ 주문 조회
-`GET /orders/{orderId}`
-
-join 결과 매핑
+* `GET /orders/{orderId}` - 주문 조회 (join 결과 매핑)
