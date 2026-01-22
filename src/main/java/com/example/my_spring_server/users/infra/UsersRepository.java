@@ -1,12 +1,10 @@
 package com.example.my_spring_server.users.infra;
 
 import com.example.my_spring_server.DBConfig;
+import com.example.my_spring_server.jpa.MyEntityIdInjector;
 import com.example.my_spring_server.users.domain.Users;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UsersRepository {
     private final DBConfig dbConfig;
@@ -16,32 +14,26 @@ public class UsersRepository {
     }
 
     public Users save(Users users) {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-            ps = connection.prepareStatement("""
+        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+            PreparedStatement ps = conn.prepareStatement("""
                     Insert Into Users (name, balance)
                     values
                     (? ,?)
-                    """);
+                    """, Statement.RETURN_GENERATED_KEYS); // 플레그 전달 - 생성된 ID 반환
+        ) {
             ps.setString(1, users.getName());
             ps.setInt(2, users.getBalance());
-            boolean result = ps.execute();
-            if(!result)
-                throw new IllegalStateException("User Insert 실패");
+            ps.executeUpdate();
+
+            try(ResultSet rs = ps.getGeneratedKeys()) {
+                boolean hasId = rs.next();
+                long id = rs.getLong(1); // id 반환
+                MyEntityIdInjector.injectId(users, id);
+                return users;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                if(ps != null)
-                    ps.close();
-                if(connection != null)
-                    connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
         }
-        return null;
+
     }
 }

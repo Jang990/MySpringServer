@@ -5,12 +5,14 @@ public class Users {
     private String name;
     private int balance;
 
+    protected Users() {}
+
     public Users(String name, int balance) {
         this.name = name;
         this.balance = balance;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
