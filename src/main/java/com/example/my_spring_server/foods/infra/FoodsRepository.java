@@ -36,4 +36,28 @@ public class FoodsRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public Foods findById(long id) {
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+             PreparedStatement ps = conn.prepareStatement("""
+                     SELECT id, name, price, stock
+                     FROM foods
+                     WHERE id = ?
+                     """)) {
+            ps.setLong(1, id);
+
+            try(ResultSet rs = ps.executeQuery()) {
+                boolean hasFood = rs.next();
+                if(!hasFood)
+                    throw new IllegalArgumentException("음식을 찾을 수 없습니다. userId=%d".formatted(id));
+
+                long foodId = rs.getLong(1);
+                Foods result = new Foods(rs.getString(2), rs.getInt(3), rs.getInt(4));
+                MyEntityIdInjector.injectId(result, foodId);
+                return result;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
