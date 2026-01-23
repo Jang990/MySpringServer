@@ -13,10 +13,31 @@ public class Orders {
 
     protected Orders(long userId, List<OrderItems> orderItems) {
         this.userId = userId;
+        this.orderItems = orderItems;
         totalPrice = orderItems.stream()
                 .map(orderItem -> orderItem.getPriceAtOrder() * orderItem.getQuantity())
                 .mapToInt(Integer::valueOf)
                 .sum();
         createdAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<OrderItems> getOrderItems() {
+        return orderItems;
     }
 }

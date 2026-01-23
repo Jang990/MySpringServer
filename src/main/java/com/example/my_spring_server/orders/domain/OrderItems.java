@@ -2,6 +2,7 @@ package com.example.my_spring_server.orders.domain;
 
 public class OrderItems {
     private Long id;
+    private long orderId;
     private long foodId;
     private int priceAtOrder;
     private int quantity;
