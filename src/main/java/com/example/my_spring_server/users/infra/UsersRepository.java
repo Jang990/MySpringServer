@@ -36,4 +36,28 @@ public class UsersRepository {
         }
 
     }
+
+    public Users findById(long id) {
+        try (
+                Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+                PreparedStatement ps = conn.prepareStatement("""
+                        SELECT id, name, balance
+                        FROM USERS
+                        WHERE id = ?
+                        """)
+        ) {
+            ps.setLong(1, id);
+            try(ResultSet rs = ps.executeQuery()) {
+                boolean hasUser = rs.next();
+                if(!hasUser)
+                    throw new IllegalArgumentException("User를 찾을 수 없습니다. userId={}".formatted(id));
+                long userId = rs.getLong(1);
+                Users users = new Users(rs.getString(2), rs.getInt(3));
+                MyEntityIdInjector.injectId(users, userId);
+                return users;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
