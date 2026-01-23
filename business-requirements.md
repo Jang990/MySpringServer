@@ -53,10 +53,6 @@
 * `POST /users` - 사용자 생성
 * `GET /users/{userId}` - 사용자 조회
 
-### 2️⃣ 가게 API
-* `POST /stores` - 가게 생성
-* `GET /stores/{storeId}` - 가게 조회
-
 ### 3️⃣ 음식 API
 * `POST /stores/{storeId}/foods` - 음식 등록
 * `GET /stores/{storeId}/foods` - 음식 조회
