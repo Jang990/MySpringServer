@@ -43,7 +43,7 @@ public class OrderRepository {
                 PreparedStatement ps = conn.prepareStatement("""
                         SELECT o.id, o.user_id, o.total_price, o.created_at, oi.id, oi.food_id, oi.price_at_order, oi.quantity
                         FROM orders o
-                        INNER JOIN order_items oi ON o.id = oi.order_id
+                        LEFT OUTER JOIN order_items oi ON o.id = oi.order_id
                         WHERE o.id = ?
                         """)) {
             ps.setLong(1, id);
