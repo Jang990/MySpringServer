@@ -4,10 +4,10 @@ import com.example.my_spring_server.users.domain.Users;
 import com.example.my_spring_server.users.infra.UsersRepository;
 import com.example.my_spring_server.users.presentation.dto.UserCreationRequest;
 
-public class UserService {
+public class UsersService {
     private final UsersRepository usersRepository;
 
-    public UserService(UsersRepository usersRepository) {
+    public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 
