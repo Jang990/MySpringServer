@@ -14,6 +14,7 @@ class UsersRepositoryTest {
         Users result = repository.save(new Users("아무개", 10_000));
 
         assertNotNull(result.getId());
+        assertEquals(result.getId(), repository.findById(result.getId()).getId());
         assertEquals("아무개", result.getName());
         assertEquals(10_000, result.getBalance());
     }
