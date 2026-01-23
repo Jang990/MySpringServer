@@ -1,11 +1,18 @@
 package com.example.my_spring_server.users.application;
 
 import com.example.my_spring_server.users.domain.Users;
+import com.example.my_spring_server.users.infra.UsersRepository;
 import com.example.my_spring_server.users.presentation.dto.UserCreationRequest;
 
 public class UserService {
+    private final UsersRepository usersRepository;
+
+    public UserService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
     public Long createUser(UserCreationRequest request) {
         Users users = new Users(request.name(), request.balance());
-        return users.getId();
+        return usersRepository.save(users).getId();
     }
 }
