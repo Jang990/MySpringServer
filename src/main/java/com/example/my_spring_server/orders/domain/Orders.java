@@ -11,6 +11,8 @@ public class Orders {
 
     private List<OrderItems> orderItems;
 
+    protected Orders() { }
+
     protected Orders(long userId, List<OrderItems> orderItems) {
         this.userId = userId;
         this.orderItems = orderItems;

@@ -7,7 +7,7 @@ public class MyEntityIdInjector {
         injectId(entity, "id", id);
     }
 
-    public static void injectId(Object entity, String fieldName, Long id) {
+    public static void injectId(Object entity, String fieldName, Object id) {
         try {
             Field field = entity.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);

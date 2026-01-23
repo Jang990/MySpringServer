@@ -7,6 +7,8 @@ public class OrderItems {
     private int priceAtOrder;
     private int quantity;
 
+    protected OrderItems() { }
+
     protected OrderItems (long foodId, int priceAtOrder, int quantity) {
         this.foodId = foodId;
         this.priceAtOrder = priceAtOrder;
