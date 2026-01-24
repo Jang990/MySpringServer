@@ -34,4 +34,8 @@ public class OrderItems {
     public Long getId() {
         return id;
     }
+
+    public int getTotalPrice() {
+        return priceAtOrder * quantity;
+    }
 }

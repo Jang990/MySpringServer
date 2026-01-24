@@ -17,7 +17,7 @@ public class Orders {
         this.userId = userId;
         this.orderItems = orderItems;
         totalPrice = orderItems.stream()
-                .map(orderItem -> orderItem.getPriceAtOrder() * orderItem.getQuantity())
+                .map(OrderItems::getTotalPrice)
                 .mapToInt(Integer::valueOf)
                 .sum();
         createdAt = LocalDateTime.now();

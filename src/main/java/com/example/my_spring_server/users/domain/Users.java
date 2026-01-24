@@ -23,4 +23,14 @@ public class Users {
     public int getBalance() {
         return balance;
     }
+
+    public void decreaseBalance(int money) {
+        assertCanPay(money);
+        balance -= money;
+    }
+
+    public void assertCanPay(int money) {
+        if(balance < money)
+            throw new IllegalStateException("사용자가 결제할 수 없는 금액");
+    }
 }

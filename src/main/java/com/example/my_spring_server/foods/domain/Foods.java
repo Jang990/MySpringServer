@@ -37,4 +37,18 @@ public class Foods {
     public int getStock() {
         return stock;
     }
+
+    public void decreaseStock(int quantity) {
+        assertEnoughStock(quantity);
+        stock -= quantity;
+    }
+
+    public void increaseStock(int quantity) {
+        stock += quantity;
+    }
+
+    public void assertEnoughStock(int quantity) {
+        if(quantity > stock)
+            throw new IllegalStateException("충분한 재고가 없습니다.");
+    }
 }
