@@ -31,4 +31,13 @@ class FoodsRepositoryTest {
         assertThrows(IllegalArgumentException.class, () -> foodsRepository.findById(-1));
     }
 
+    @Test
+    void 음식_재고_변경() {
+        Foods testFood = foodsRepository.save(new Foods("짬뽕", 7000, 1000));
+        foodsRepository.changeStock(testFood.getId(), 50);
+
+        Foods dbFood = foodsRepository.findById(testFood.getId());
+        assertEquals(50, dbFood.getStock());
+    }
+
 }
