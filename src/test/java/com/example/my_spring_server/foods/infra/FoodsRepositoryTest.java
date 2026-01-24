@@ -2,8 +2,12 @@ package com.example.my_spring_server.foods.infra;
 
 import com.example.my_spring_server.MySQLConfig;
 import com.example.my_spring_server.foods.domain.Foods;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FoodsRepositoryTest {
@@ -38,6 +42,25 @@ class FoodsRepositoryTest {
 
         Foods dbFood = foodsRepository.findById(testFood.getId());
         assertEquals(50, dbFood.getStock());
+    }
+
+    @Test
+    void ids를_통한_음식들_검색() {
+        List<Foods> foods = List.of(
+                new Foods("짜장면", 5000, 30),
+                new Foods("짬뽕", 7000, 1000)
+        );
+
+        for (Foods food : foods)
+            foodsRepository.save(food);
+
+        List<Long> ids = foods.stream().mapToLong(Foods::getId).boxed().toList();
+
+        List<Long> dbFoodIds = foodsRepository.findAll(ids).stream()
+                .mapToLong(Foods::getId)
+                .boxed()
+                .toList();
+        assertThat(ids).containsExactlyInAnyOrderElementsOf(dbFoodIds);
     }
 
 }

@@ -5,6 +5,9 @@ import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
 
 import java.sql.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FoodsRepository {
     private final DBConfig dbConfig;
@@ -56,6 +59,38 @@ public class FoodsRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Foods> findAll(List<Long> ids) {
+        if(ids.isEmpty())
+            throw new IllegalArgumentException("음식 검색 시 ids는 필수");
+
+        try (
+                Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+                PreparedStatement ps = conn.prepareStatement(createFindAllSql(ids.size()))
+        ) {
+            for (int i = 0; i < ids.size(); i++)
+                ps.setLong(i + 1, ids.get(i));
+
+            try(ResultSet rs = ps.executeQuery()) {
+                List<Foods> foods = new LinkedList<>();
+                while (rs.next()) {
+                    foods.add(createFood(rs));
+                }
+                return foods;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String createFindAllSql(int idsSize) {
+        String idString = String.join(",", Collections.nCopies(idsSize, "?"));
+        return """
+            SELECT id, name, price, stock
+            FROM foods
+            WHERE id in ( %s )
+            """.formatted(idString);
     }
 
     private Foods createFood(ResultSet rs) throws SQLException {
