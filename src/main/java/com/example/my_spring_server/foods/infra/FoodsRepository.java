@@ -58,7 +58,7 @@ public class FoodsRepository {
         }
     }
 
-    private static Foods createFood(ResultSet rs) throws SQLException {
+    private Foods createFood(ResultSet rs) throws SQLException {
         long foodId = rs.getLong(1);
         Foods result = new Foods(rs.getString(2), rs.getInt(3), rs.getInt(4));
         MyEntityIdInjector.injectId(result, foodId);
