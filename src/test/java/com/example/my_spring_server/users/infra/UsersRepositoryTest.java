@@ -10,13 +10,16 @@ class UsersRepositoryTest {
     UsersRepository repository = new UsersRepository(new MySQLConfig());
 
     @Test
-    void Users_저장하기() {
-        Users result = repository.save(new Users("아무개", 10_000));
+    void Users_저장_조회() {
+        Users createdUser = repository.save(new Users("아무개", 10_000));
+        assertNotNull(createdUser.getId());
+        assertEquals("아무개", createdUser.getName());
+        assertEquals(10_000, createdUser.getBalance());
 
-        assertNotNull(result.getId());
-        assertEquals(result.getId(), repository.findById(result.getId()).getId());
-        assertEquals("아무개", result.getName());
-        assertEquals(10_000, result.getBalance());
+        Users dbUser = repository.findById(createdUser.getId());
+        assertEquals(createdUser.getId(), dbUser.getId());
+        assertEquals(createdUser.getName(), dbUser.getName());
+        assertEquals(createdUser.getBalance(), dbUser.getBalance());
     }
 
     @Test
@@ -30,9 +33,18 @@ class UsersRepositoryTest {
         assertEquals(10_000, result.getBalance());
     }
 
-    @Test
+    @Test   
     void 찾을_수_없는_사용자_조회() {
         assertThrows(IllegalArgumentException.class, () -> repository.findById(-1));
+    }
+
+    @Test
+    void 사용자_잔액_변경() {
+        Users testUser = repository.save(new Users("아무개", 10_000));
+        repository.changeBalance(testUser.getId(), 5_000);
+
+        Users result = repository.findById(testUser.getId());
+        assertEquals(5_000, result.getBalance());
     }
 
 }

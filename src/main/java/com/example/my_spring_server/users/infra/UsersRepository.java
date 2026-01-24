@@ -60,4 +60,22 @@ public class UsersRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public void changeBalance(long userId, int balance) {
+        try (
+                Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+                PreparedStatement ps = conn.prepareStatement("""
+                        UPDATE users
+                        SET balance = ?
+                        WHERE id = ?
+                        """)
+        ) {
+            ps.setInt(1, balance);
+            ps.setLong(2, userId);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
