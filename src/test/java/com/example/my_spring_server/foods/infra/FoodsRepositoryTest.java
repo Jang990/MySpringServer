@@ -15,27 +15,20 @@ class FoodsRepositoryTest {
 
         Foods result = foodsRepository.save(food);
 
+        assertNotNull(result.getId());
         assertEquals("짜장면", result.getName());
         assertEquals(5000, result.getPrice());
         assertEquals(30, result.getStock());
+
+        Foods dbFood = foodsRepository.findById(food.getId());
+        assertEquals(result.getName(), dbFood.getName());
+        assertEquals(result.getPrice(), dbFood.getPrice());
+        assertEquals(result.getStock(), dbFood.getStock());
     }
 
     @Test
     void 찾을_수_없는_음식_오류() {
         assertThrows(IllegalArgumentException.class, () -> foodsRepository.findById(-1));
-    }
-
-    @Test
-    void ID로_음식_찾기() {
-        Foods testFood = new Foods("짜장면", 5000, 30);
-        foodsRepository.save(testFood);
-
-        Foods result = foodsRepository.findById(testFood.getId());
-
-        assertEquals(testFood.getId(), result.getId());
-        assertEquals("짜장면", result.getName());
-        assertEquals(5000, result.getPrice());
-        assertEquals(30, result.getStock());
     }
 
 }
