@@ -52,10 +52,13 @@
 ### 1️⃣ 사용자 API
 * `POST /users` - 사용자 생성
 * `GET /users/{userId}` - 사용자 조회
+* `POST /users/{userId}/balance` - 사용자 잔액 증감
 
 ### 3️⃣ 음식 API
-* `POST /stores/{storeId}/foods` - 음식 등록
-* `GET /stores/{storeId}/foods` - 음식 조회
+* `POST /foods` - 음식 등록
+* `GET /foods` - 음식 조회
+* `POST /foods/stock` - 음식 재고 증감
+
 ### 4️⃣ 주문 API
 * `POST /orders` - 주문 생성 (핵심)
 ```json
