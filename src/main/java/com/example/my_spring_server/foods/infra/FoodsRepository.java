@@ -51,14 +51,18 @@ public class FoodsRepository {
                 if(!hasFood)
                     throw new IllegalArgumentException("음식을 찾을 수 없습니다. userId=%d".formatted(id));
 
-                long foodId = rs.getLong(1);
-                Foods result = new Foods(rs.getString(2), rs.getInt(3), rs.getInt(4));
-                MyEntityIdInjector.injectId(result, foodId);
-                return result;
+                return createFood(rs);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static Foods createFood(ResultSet rs) throws SQLException {
+        long foodId = rs.getLong(1);
+        Foods result = new Foods(rs.getString(2), rs.getInt(3), rs.getInt(4));
+        MyEntityIdInjector.injectId(result, foodId);
+        return result;
     }
 
     public void changeStock(long foodId, int stock) {
