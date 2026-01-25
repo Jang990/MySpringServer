@@ -46,7 +46,7 @@ class OrderServiceTest {
         );
 
         List<FoodOrders> foodOrders = List.of(
-                new FoodOrders(food1, 3), // 1000 * 3원
+                new FoodOrders(food1, 3), // 1000원 * 3
                 new FoodOrders(food2, 1) // 2000원
         );
 
