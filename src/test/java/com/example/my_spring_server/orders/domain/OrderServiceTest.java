@@ -17,15 +17,14 @@ class OrderServiceTest {
     OrderService orderService = new OrderService();
 
     Users users1;
-    Long userId = 1L;
 
     Foods food1;
     Foods food2;
 
     @BeforeEach
     void beforeEach() {
-        users1 = new Users("아무개", 10_000);
-        MyReflectionTestUtils.setField(users1, "id", userId);
+        users1 = new Users("아무개", 15_000);
+        MyReflectionTestUtils.setField(users1, "id", 1L);
 
         food1 = new Foods("짜장면", 1_000, 10);
         MyReflectionTestUtils.setField(food1, "id", 111L);
@@ -37,14 +36,6 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 생성 시 음식_재고감소 + 사용자_잔액_감소")
     void test1() {
-        Orders orders = new Orders(
-                userId,
-                List.of(
-                        new OrderItems(food1.getId(), 1_000, 3),
-                        new OrderItems(food2.getId(), 2_000, 1)
-                )
-        );
-
         List<FoodOrders> foodOrders = List.of(
                 new FoodOrders(food1, 3), // 1000원 * 3
                 new FoodOrders(food2, 1) // 2000원
@@ -73,9 +64,32 @@ class OrderServiceTest {
         // 총 결제 금액 = 3000 + 2000
         assertEquals(5_000, order.getTotalPrice());
 
-        // 사용자 잔액 10_000 -> 5_000
+        // 사용자 잔액 15_000 -> 10_000
         assertEquals(users1.getId(), order.getUserId());
-        assertEquals(5_000, users1.getBalance());
+        assertEquals(10_000, users1.getBalance());
+    }
+
+    @Test
+    @DisplayName("재고가 너무 적은 경우 예외처리")
+    public void test2() {
+        List<FoodOrders> foodOrders = List.of(
+                new FoodOrders(food1, 1),
+                new FoodOrders(food2, 6) // 재고가 5개 -> 부족
+        );
+
+        assertThrows(IllegalStateException.class, () -> orderService.order(users1, foodOrders));
+    }
+
+    @Test
+    @DisplayName("사용자 잔액이 부족한 경우")
+    public void test3() {
+        // 16_000원 주문
+        List<FoodOrders> foodOrders = List.of(
+                new FoodOrders(food1, 6), // 1000원 * 6 = 6000원
+                new FoodOrders(food2, 5) // 2000원 * 5 = 10000원
+        );
+
+        assertThrows(IllegalStateException.class, () -> orderService.order(users1, foodOrders));
     }
 
 }
