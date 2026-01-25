@@ -3,6 +3,7 @@ package com.example.my_spring_server.foods.infra;
 import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
+import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 
 import java.sql.*;
 import java.util.Collections;
@@ -11,9 +12,11 @@ import java.util.List;
 
 public class FoodsRepository {
     private final DBConfig dbConfig;
+    private final MyJdbcTemplate myJdbcTemplate;
 
-    public FoodsRepository(DBConfig dbConfig) {
+    public FoodsRepository(DBConfig dbConfig, MyJdbcTemplate myJdbcTemplate) {
         this.dbConfig = dbConfig;
+        this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Foods save(Foods food) {
@@ -109,15 +112,10 @@ public class FoodsRepository {
     }
 
     public void updateStock(Connection conn, long foodId, int stock) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("""
-                    UPDATE foods
-                    SET stock = ?
-                    WHERE id = ?
-                    """)) {
-            ps.setInt(1, stock);
-            ps.setLong(2, foodId);
-
-            ps.executeUpdate();
-        }
+        myJdbcTemplate.update(conn, """
+                UPDATE foods
+                SET stock = ?
+                WHERE id = ?
+                """, stock, foodId);
     }
 }

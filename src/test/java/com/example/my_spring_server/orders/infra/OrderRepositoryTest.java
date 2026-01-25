@@ -21,7 +21,7 @@ class OrderRepositoryTest {
     MySQLConfig mySQLConfig = new MySQLConfig();
 
     UsersRepository usersRepository = new UsersRepository(mySQLConfig, new MyJdbcTemplate());
-    FoodsRepository foodsRepository = new FoodsRepository(mySQLConfig);
+    FoodsRepository foodsRepository = new FoodsRepository(mySQLConfig, new MyJdbcTemplate());
     OrderRepository orderRepository = new OrderRepository(mySQLConfig);
 
 
