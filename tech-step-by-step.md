@@ -9,7 +9,7 @@
 <br>
 <br>
 
-### STEP 1. JDBC
+### STEP 1. JDBC (완료)
 
 * 1-1. DriverManager로 MySQL 연결
 * 1-2. Connection 하나 잡기
@@ -20,7 +20,8 @@
 
 🎯 목표
 
-“트랜잭션 = Connection 단위” 체감
+1. “트랜잭션 = Connection 단위” 체감
+2. JDBC 반복 작업 경험
 
 <br>
 <br>
