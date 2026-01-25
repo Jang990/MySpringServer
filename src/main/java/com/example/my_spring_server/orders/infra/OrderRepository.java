@@ -23,18 +23,21 @@ public class OrderRepository {
         try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) { // Order 삽입 ps
             conn.setAutoCommit(false);
 
-            try {
-                insertOrder(conn, order);
-                insertOrderItems(conn, order.getOrderItems(), order.getId());
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
-
-            return order;
+            return save(conn, order);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public Orders save(Connection conn, Orders order) throws SQLException {
+        try {
+            insertOrder(conn, order);
+            insertOrderItems(conn, order.getOrderItems(), order.getId());
+            conn.commit();
+            return order;
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
         }
     }
 

@@ -101,20 +101,23 @@ public class FoodsRepository {
     }
 
     public void updateStock(long foodId, int stock) {
-        try(
-                Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-                PreparedStatement ps = conn.prepareStatement("""
-                        UPDATE foods
-                        SET stock = ?
-                        WHERE id = ?
-                        """)
-        ) {
+        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+            updateStock(conn, foodId, stock);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateStock(Connection conn, long foodId, int stock) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("""
+                    UPDATE foods
+                    SET stock = ?
+                    WHERE id = ?
+                    """)) {
             ps.setInt(1, stock);
             ps.setLong(2, foodId);
 
             ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }
