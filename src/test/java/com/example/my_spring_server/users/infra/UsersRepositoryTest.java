@@ -1,13 +1,14 @@
 package com.example.my_spring_server.users.infra;
 
 import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.users.domain.Users;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UsersRepositoryTest {
-    UsersRepository repository = new UsersRepository(new MySQLConfig());
+    UsersRepository repository = new UsersRepository(new MySQLConfig(), new MyJdbcTemplate());
 
     @Test
     void Users_저장_조회() {
@@ -41,10 +42,10 @@ class UsersRepositoryTest {
     @Test
     void 사용자_잔액_변경() {
         Users testUser = repository.save(new Users("아무개", 10_000));
-        repository.updateBalance(testUser.getId(), 5_000);
+        repository.updateBalance(testUser.getId(), 3_000);
 
         Users result = repository.findById(testUser.getId());
-        assertEquals(5_000, result.getBalance());
+        assertEquals(3_000, result.getBalance());
     }
 
 }

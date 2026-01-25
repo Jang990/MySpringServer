@@ -4,6 +4,7 @@ import com.example.my_spring_server.MySQLConfig;
 import com.example.my_spring_server.foods.domain.FoodOrders;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.foods.infra.FoodsRepository;
+import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.orders.domain.OrderItems;
 import com.example.my_spring_server.orders.domain.OrderService;
 import com.example.my_spring_server.orders.domain.Orders;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderRepositoryTest {
     MySQLConfig mySQLConfig = new MySQLConfig();
 
-    UsersRepository usersRepository = new UsersRepository(mySQLConfig);
+    UsersRepository usersRepository = new UsersRepository(mySQLConfig, new MyJdbcTemplate());
     FoodsRepository foodsRepository = new FoodsRepository(mySQLConfig);
     OrderRepository orderRepository = new OrderRepository(mySQLConfig);
 

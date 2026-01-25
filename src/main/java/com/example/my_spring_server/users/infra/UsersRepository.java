@@ -2,15 +2,18 @@ package com.example.my_spring_server.users.infra;
 
 import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
+import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.users.domain.Users;
 
 import java.sql.*;
 
 public class UsersRepository {
     private final DBConfig dbConfig;
+    private final MyJdbcTemplate myJdbcTemplate;
 
-    public UsersRepository(DBConfig dbConfig) {
+    public UsersRepository(DBConfig dbConfig, MyJdbcTemplate myJdbcTemplate) {
         this.dbConfig = dbConfig;
+        this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Users save(Users users) {
@@ -70,15 +73,10 @@ public class UsersRepository {
     }
 
     public void updateBalance(Connection conn, long userId, int balance) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("""
+        myJdbcTemplate.update(conn, """
                     UPDATE users
                     SET balance = ?
                     WHERE id = ?
-                    """)) {
-            ps.setInt(1, balance);
-            ps.setLong(2, userId);
-
-            ps.executeUpdate();
-        }
+                    """, balance, userId);
     }
 }
