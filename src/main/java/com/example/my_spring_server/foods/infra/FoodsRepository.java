@@ -100,7 +100,7 @@ public class FoodsRepository {
         return result;
     }
 
-    public void changeStock(long foodId, int stock) {
+    public void updateStock(long foodId, int stock) {
         try(
                 Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
                 PreparedStatement ps = conn.prepareStatement("""

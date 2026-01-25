@@ -61,7 +61,7 @@ public class UsersRepository {
         }
     }
 
-    public void changeBalance(long userId, int balance) {
+    public void updateBalance(long userId, int balance) {
         try (
                 Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
                 PreparedStatement ps = conn.prepareStatement("""

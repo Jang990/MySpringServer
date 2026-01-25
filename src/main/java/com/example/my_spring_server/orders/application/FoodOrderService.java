@@ -6,7 +6,6 @@ import com.example.my_spring_server.foods.infra.FoodsRepository;
 import com.example.my_spring_server.orders.domain.OrderService;
 import com.example.my_spring_server.orders.domain.Orders;
 import com.example.my_spring_server.orders.infra.OrderRepository;
-import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequest;
 import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequests;
 import com.example.my_spring_server.users.domain.Users;
 import com.example.my_spring_server.users.infra.UsersRepository;
@@ -41,8 +40,8 @@ public class FoodOrderService {
         Orders order = orderService.order(user, foodOrders);
 
         orderRepository.save(order);
-        usersRepository.changeBalance(user.getId(), user.getBalance());
+        usersRepository.updateBalance(user.getId(), user.getBalance());
         for (Foods food : foods)
-            foodsRepository.changeStock(food.getId(), food.getStock());
+            foodsRepository.updateStock(food.getId(), food.getStock());
     }
 }

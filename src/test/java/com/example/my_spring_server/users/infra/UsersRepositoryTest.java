@@ -41,7 +41,7 @@ class UsersRepositoryTest {
     @Test
     void 사용자_잔액_변경() {
         Users testUser = repository.save(new Users("아무개", 10_000));
-        repository.changeBalance(testUser.getId(), 5_000);
+        repository.updateBalance(testUser.getId(), 5_000);
 
         Users result = repository.findById(testUser.getId());
         assertEquals(5_000, result.getBalance());
