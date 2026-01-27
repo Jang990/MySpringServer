@@ -2,6 +2,8 @@ package com.example.my_spring_server.orders.infra;
 
 import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
+import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
+import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.orders.domain.OrderItems;
 import com.example.my_spring_server.orders.domain.Orders;
 
@@ -14,9 +16,11 @@ import java.util.List;
 
 public class OrderRepository {
     private final DBConfig dbConfig;
+    private final MyJdbcTemplate myJdbcTemplate;
 
-    public OrderRepository(DBConfig dbConfig) {
+    public OrderRepository(DBConfig dbConfig, MyJdbcTemplate myJdbcTemplate) {
         this.dbConfig = dbConfig;
+        this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Orders save(Orders order) {
@@ -117,23 +121,22 @@ public class OrderRepository {
 
     // Order 삽입
     private void insertOrder(Connection conn, Orders order) throws SQLException {
-        try(PreparedStatement psOrder = conn.prepareStatement("""
-                INSERT INTO orders (user_id, total_price, created_at)
-                VALUES
-                (?, ?, ?)
-                """, Statement.RETURN_GENERATED_KEYS)) {
-            psOrder.setLong(1, order.getUserId());
-            psOrder.setInt(2, order.getTotalPrice());
-            psOrder.setObject(3, order.getCreatedAt());
+        MyKeyHolder orderKeyHolder = new MyKeyHolder();
+        myJdbcTemplate.update(
+                conn,
+                con -> {
+                    PreparedStatement ps = conn.prepareStatement("""
+                            INSERT INTO orders (user_id, total_price, created_at)
+                            VALUES
+                            (?, ?, ?)
+                            """, Statement.RETURN_GENERATED_KEYS);
+                    ps.setLong(1, order.getUserId());
+                    ps.setInt(2, order.getTotalPrice());
+                    ps.setObject(3, order.getCreatedAt());
+                    return ps;
+                }, orderKeyHolder);
 
-            psOrder.executeUpdate();
-
-            try (ResultSet orderIdResultSet = psOrder.getGeneratedKeys()) { // Order 삽입으로 생성된 키 확인
-                orderIdResultSet.next();
-                long orderId = orderIdResultSet.getLong(1);
-                MyEntityIdInjector.injectId(order, orderId);
-            }
-        }
+        MyEntityIdInjector.injectId(order, orderKeyHolder.getId());
     }
 
     // OrderItems 삽입
