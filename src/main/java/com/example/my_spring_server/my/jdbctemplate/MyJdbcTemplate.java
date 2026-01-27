@@ -9,10 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MyJdbcTemplate {
-    public int update(Connection conn, MyPreparedStatementCreator psc, KeyHolder keyHolder) {
+    public int update(Connection conn, MyPreparedStatementCreator psc, MyKeyHolder myKeyHolder) {
         try(PreparedStatement ps = psc.createPreparedStatement(conn)) {
             int result = ps.executeUpdate();
-            keyHolder.setId(findGeneratedId(ps));
+            myKeyHolder.setId(findGeneratedId(ps));
             return result;
         } catch (SQLException e) {
             throw new RuntimeException(e);
