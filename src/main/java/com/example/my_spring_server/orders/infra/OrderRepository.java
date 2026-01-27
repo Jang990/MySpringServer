@@ -57,8 +57,6 @@ public class OrderRepository {
 
     public Orders save(Orders order) {
         try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) { // Order 삽입 ps
-            conn.setAutoCommit(false);
-
             return save(conn, order);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -67,8 +65,11 @@ public class OrderRepository {
 
     public Orders save(Connection conn, Orders order) throws SQLException {
         try {
+            conn.setAutoCommit(false);
+
             insertOrder(conn, order);
             insertOrderItems(conn, order.getOrderItems(), order.getId());
+            
             conn.commit();
             return order;
         } catch (SQLException e) {
