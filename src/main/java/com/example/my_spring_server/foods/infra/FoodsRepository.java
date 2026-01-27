@@ -5,6 +5,7 @@ import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
 import com.example.my_spring_server.my.jdbctemplate.EmptyResultException;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
+import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
 
 import java.sql.*;
@@ -29,24 +30,23 @@ public class FoodsRepository {
     }
 
     public Foods save(Foods food) {
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+            MyKeyHolder myKeyHolder = new MyKeyHolder();
+            myJdbcTemplate.update(conn, con -> {
                 PreparedStatement ps = conn.prepareStatement("""
-                     INSERT INTO foods(name, price, stock)
-                     VALUES
-                     (?, ?, ?)
-                     """, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, food.getName());
-            ps.setInt(2, food.getPrice());
-            ps.setInt(3, food.getStock());
+                        INSERT INTO foods(name, price, stock)
+                        VALUES
+                        (?, ?, ?)
+                        """, Statement.RETURN_GENERATED_KEYS);
 
-            ps.executeUpdate();
+                ps.setString(1, food.getName());
+                ps.setInt(2, food.getPrice());
+                ps.setInt(3, food.getStock());
+                return ps;
+            }, myKeyHolder);
 
-            try(ResultSet rs = ps.getGeneratedKeys()) {
-                rs.next();
-                long foodId = rs.getLong(1);
-                MyEntityIdInjector.injectId(food, foodId);
-                return food;
-            }
+            MyEntityIdInjector.injectId(food, myKeyHolder.getId());
+            return food;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
