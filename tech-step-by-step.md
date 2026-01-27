@@ -9,7 +9,7 @@
 <br>
 <br>
 
-### STEP 1. JDBC (완료)
+### STEP 1. Java - JDBC (완료)
 
 * 1-1. DriverManager로 MySQL 연결
 * 1-2. Connection 하나 잡기
@@ -26,7 +26,7 @@
 <br>
 <br>
 
-### STEP 2. JdbcTemplate 만들기
+### STEP 2. Spring - JdbcTemplate 만들기
 
 노가다 제거 단계
 
