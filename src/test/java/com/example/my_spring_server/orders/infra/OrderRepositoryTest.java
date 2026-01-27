@@ -22,7 +22,7 @@ class OrderRepositoryTest {
 
     UsersRepository usersRepository = new UsersRepository(mySQLConfig, new MyJdbcTemplate());
     FoodsRepository foodsRepository = new FoodsRepository(mySQLConfig, new MyJdbcTemplate());
-    OrderRepository orderRepository = new OrderRepository(mySQLConfig);
+    OrderRepository orderRepository = new OrderRepository(mySQLConfig, new MyJdbcTemplate());
 
 
     @Test
@@ -30,14 +30,14 @@ class OrderRepositoryTest {
         Users users = new Users("김아무개", 5000);
         usersRepository.save(users);
 
-        Foods foods1 = new Foods("떡볶이", 1000, 10);
-        Foods foods2 = new Foods("짬뽕", 2000, 5);
+        Foods foods1 = new Foods("떡볶이", 100, 10);
+        Foods foods2 = new Foods("짬뽕", 200, 5);
         foodsRepository.save(foods1);
         foodsRepository.save(foods2);
 
         List<FoodOrders> foodOrders = List.of(
-                new FoodOrders(foods1, 10),
-                new FoodOrders(foods2, 20)
+                new FoodOrders(foods1, 5),
+                new FoodOrders(foods2, 3)
         );
 
         OrderService orderService = new OrderService();
