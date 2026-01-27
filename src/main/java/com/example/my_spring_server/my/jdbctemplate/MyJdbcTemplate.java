@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MyJdbcTemplate {
-    public int update(Connection conn, String sql, KeyHolder keyHolder) {
-        try(PreparedStatement ps = conn.prepareStatement(sql)) {
+    public int update(Connection conn, MyPreparedStatementCreator psc, KeyHolder keyHolder) {
+        try(PreparedStatement ps = psc.createPreparedStatement(conn)) {
             int result = ps.executeUpdate();
             keyHolder.setId(findGeneratedId(ps));
             return result;
@@ -21,7 +21,8 @@ public class MyJdbcTemplate {
 
     private long findGeneratedId(PreparedStatement ps) throws SQLException {
         try (ResultSet keyResultSet = ps.getGeneratedKeys()) {
-            keyResultSet.next();
+            if(!keyResultSet.next())
+                throw new SQLException("생성된 키가 없음");
             return keyResultSet.getLong(1);
         }
     }
