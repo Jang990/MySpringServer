@@ -141,26 +141,28 @@ public class OrderRepository {
 
     // OrderItems 삽입
     private void insertOrderItems(Connection conn, List<OrderItems> orderItems, long orderId) throws SQLException {
-        try (PreparedStatement psOrderItems = conn.prepareStatement("""
-                INSERT INTO order_items (order_id, food_id, price_at_order, quantity)
-                VALUES
-                (?, ?, ?, ?)
-                """, Statement.RETURN_GENERATED_KEYS)) {
-            for (OrderItems orderItem : orderItems) {
-                psOrderItems.setLong(1, orderId);
-                psOrderItems.setLong(2, orderItem.getFoodId());
-                psOrderItems.setInt(3, orderItem.getPriceAtOrder());
-                psOrderItems.setInt(4, orderItem.getQuantity());
+        for (OrderItems orderItem : orderItems) {
+            MyKeyHolder orderItemKeyHolder = new MyKeyHolder();
+            myJdbcTemplate.update(
+                    conn,
+                    con -> {
+                        PreparedStatement psOrderItems = conn.prepareStatement("""
+                                    INSERT INTO order_items (order_id, food_id, price_at_order, quantity)
+                                    VALUES
+                                    (?, ?, ?, ?)
+                                    """, Statement.RETURN_GENERATED_KEYS);
+                        psOrderItems.setLong(1, orderId);
+                        psOrderItems.setLong(2, orderItem.getFoodId());
+                        psOrderItems.setInt(3, orderItem.getPriceAtOrder());
+                        psOrderItems.setInt(4, orderItem.getQuantity());
 
-                psOrderItems.executeUpdate();
+                        return psOrderItems;
+                    },
+                    orderItemKeyHolder
+            );
 
-                try (ResultSet orderItemIdResultSet = psOrderItems.getGeneratedKeys()) { // OrderItems의 id, foodId 세팅
-                    orderItemIdResultSet.next();
-                    long orderItemId = orderItemIdResultSet.getLong(1);
-                    MyEntityIdInjector.injectId(orderItem, orderItemId);
-                    MyEntityIdInjector.injectId(orderItem, "orderId", orderId);
-                }
-            }
+            MyEntityIdInjector.injectId(orderItem, orderItemKeyHolder.getId());
+            MyEntityIdInjector.injectId(orderItem, "orderId", orderId);
         }
     }
 
