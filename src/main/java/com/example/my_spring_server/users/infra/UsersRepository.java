@@ -27,9 +27,7 @@ public class UsersRepository {
     }
 
     public Users save(Users users) {
-        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-
-        ) {
+        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
             MyKeyHolder myKeyHolder = new MyKeyHolder();
             myJdbcTemplate.update(
                     conn,
@@ -55,14 +53,7 @@ public class UsersRepository {
     }
 
     public Users findById(long id) {
-        try (
-                Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-                PreparedStatement ps = conn.prepareStatement("""
-                        SELECT id, name, balance
-                        FROM USERS
-                        WHERE id = ?
-                        """)
-        ) {
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
             try {
                 return myJdbcTemplate.queryForObject(conn, """
                             SELECT id, name, balance
