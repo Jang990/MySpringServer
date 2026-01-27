@@ -9,6 +9,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MyJdbcTemplate {
+    public int update(Connection conn, String sql, KeyHolder keyHolder) {
+        try(PreparedStatement ps = conn.prepareStatement(sql)) {
+            int result = ps.executeUpdate();
+            keyHolder.setId(findGeneratedId(ps));
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private long findGeneratedId(PreparedStatement ps) throws SQLException {
+        try (ResultSet keyResultSet = ps.getGeneratedKeys()) {
+            keyResultSet.next();
+            return keyResultSet.getLong(1);
+        }
+    }
+
     public int update(Connection conn, String sql, Object... params) {
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
             setArgsInPreparedStatement(ps, params);
