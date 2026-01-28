@@ -2,6 +2,7 @@ package com.example.my_spring_server.users.infra;
 
 import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
+import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.EmptyResultException;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
@@ -18,16 +19,16 @@ public class UsersRepository {
         return users;
     };
 
-    private final DBConfig dbConfig;
+    private final MyDataSource myDataSource;
     private final MyJdbcTemplate myJdbcTemplate;
 
-    public UsersRepository(DBConfig dbConfig, MyJdbcTemplate myJdbcTemplate) {
-        this.dbConfig = dbConfig;
+    public UsersRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
+        this.myDataSource = myDataSource;
         this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Users save(Users users) {
-        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try(Connection conn = myDataSource.getConnection()) {
             MyKeyHolder myKeyHolder = new MyKeyHolder();
             myJdbcTemplate.update(
                     conn,
@@ -53,7 +54,7 @@ public class UsersRepository {
     }
 
     public Users findById(long id) {
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try (Connection conn = myDataSource.getConnection()) {
             try {
                 return myJdbcTemplate.queryForObject(conn, """
                             SELECT id, name, balance
@@ -70,7 +71,7 @@ public class UsersRepository {
     }
 
     public void updateBalance(long userId, int balance) {
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try (Connection conn = myDataSource.getConnection()) {
             updateBalance(conn, userId, balance);
         } catch (SQLException e) {
             throw new RuntimeException(e);

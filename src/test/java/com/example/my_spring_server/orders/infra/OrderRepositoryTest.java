@@ -23,7 +23,7 @@ class OrderRepositoryTest {
     MySQLConfig mySQLConfig = new MySQLConfig();
     MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
 
-    UsersRepository usersRepository = new UsersRepository(mySQLConfig, new MyJdbcTemplate());
+    UsersRepository usersRepository = new UsersRepository(dataSource, new MyJdbcTemplate());
     FoodsRepository foodsRepository = new FoodsRepository(dataSource, new MyJdbcTemplate());
     OrderRepository orderRepository = new OrderRepository(mySQLConfig, new MyJdbcTemplate());
 
