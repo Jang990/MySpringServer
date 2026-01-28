@@ -2,6 +2,8 @@ package com.example.my_spring_server.foods.infra;
 
 import com.example.my_spring_server.MySQLConfig;
 import com.example.my_spring_server.foods.domain.Foods;
+import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
+import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +13,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FoodsRepositoryTest {
-    FoodsRepository foodsRepository = new FoodsRepository(new MySQLConfig(), new MyJdbcTemplate());
+    MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
+    FoodsRepository foodsRepository = new FoodsRepository(dataSource, new MyJdbcTemplate());
 
     @Test
     void 음식_저장() {
