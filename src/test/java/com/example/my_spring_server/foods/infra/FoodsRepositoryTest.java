@@ -2,6 +2,7 @@ package com.example.my_spring_server.foods.infra;
 
 import com.example.my_spring_server.MySQLConfig;
 import com.example.my_spring_server.foods.domain.Foods;
+import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FoodsRepositoryTest {
-    FoodsRepository foodsRepository = new FoodsRepository(new MySQLConfig());
+    FoodsRepository foodsRepository = new FoodsRepository(new MySQLConfig(), new MyJdbcTemplate());
 
     @Test
     void 음식_저장() {

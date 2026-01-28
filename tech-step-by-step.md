@@ -9,7 +9,7 @@
 <br>
 <br>
 
-### STEP 1. JDBC (완료)
+### STEP 1. Java - JDBC (완료)
 
 * 1-1. DriverManager로 MySQL 연결
 * 1-2. Connection 하나 잡기
@@ -26,18 +26,18 @@
 <br>
 <br>
 
-### STEP 2. JdbcTemplate 만들기
+### STEP 2. Spring - JdbcTemplate 만들기
 
 노가다 제거 단계
 
 * 2-1. 반복되는 JDBC 코드 정리
-* 2-2. Connection 열고 닫는 책임 한 곳으로
+* 2-2. Connection은 놔두기 -> DataSource TrasactionManager를 거치며 차근차근 없앨 것
 * 2-3. PreparedStatement 실행 로직 캡슐화
 * 2-4. ResultSet → 객체 매핑 분리
 
 🎯 목표
 
-“JdbcTemplate 왜 있는지 이해”
+JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 
 <br>
 <br>
