@@ -7,24 +7,26 @@ import java.sql.SQLException;
 
 public class MyTransactionManager {
     private final MyDataSource myDataSource;
-    private final ThreadLocal<Connection> txThreadLocal = new ThreadLocal<>();
 
     public MyTransactionManager(MyDataSource myDataSource) {
         this.myDataSource = myDataSource;
     }
 
     public void startTransaction() {
+        if(MyConnectionThreadLocal.getConnection() != null)
+            throw new IllegalStateException("이미 진행중인 트랜잭션이 있음");
+
         try {
             Connection conn = myDataSource.getConnection();
             conn.setAutoCommit(false);
-            txThreadLocal.set(conn);
+            MyConnectionThreadLocal.bindConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException("트랜잭션 시작 예외", e);
         }
     }
 
     public void commit() {
-        Connection conn = txThreadLocal.get();
+        Connection conn = MyConnectionThreadLocal.getConnection();
         if(conn == null)
             return;
 
@@ -34,12 +36,12 @@ public class MyTransactionManager {
         } catch (SQLException e) {
             throw new RuntimeException("트랜잭션 커밋 예외",e);
         } finally {
-            txThreadLocal.remove();
+            MyConnectionThreadLocal.clear();
         }
     }
 
     public void rollback() {
-        Connection conn = txThreadLocal.get();
+        Connection conn = MyConnectionThreadLocal.getConnection();
         if(conn == null)
             return;
 
@@ -49,7 +51,7 @@ public class MyTransactionManager {
         } catch (SQLException e) {
             throw new RuntimeException("트랜잭션 롤백 예외", e);
         } finally {
-            txThreadLocal.remove();
+            MyConnectionThreadLocal.clear();
         }
     }
 }
