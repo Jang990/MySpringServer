@@ -52,6 +52,7 @@ public class FoodOrderService {
                 usersRepository.updateBalance(conn, user.getId(), user.getBalance());
                 for (Foods food : foods)
                     foodsRepository.updateStock(conn, food.getId(), food.getStock());
+                conn.commit();
             } catch (SQLException | RuntimeException e) {
                 conn.rollback();
                 throw e;
