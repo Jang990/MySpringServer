@@ -1,6 +1,8 @@
 package com.example.my_spring_server.users.infra;
 
 import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
+import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.users.domain.Users;
 import org.junit.jupiter.api.Test;
@@ -8,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UsersRepositoryTest {
-    UsersRepository repository = new UsersRepository(new MySQLConfig(), new MyJdbcTemplate());
+    MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
+    UsersRepository repository = new UsersRepository(dataSource, new MyJdbcTemplate());
 
     @Test
     void Users_저장_조회() {
@@ -34,7 +37,7 @@ class UsersRepositoryTest {
         assertEquals(10_000, result.getBalance());
     }
 
-    @Test   
+    @Test
     void 찾을_수_없는_사용자_조회() {
         assertThrows(IllegalArgumentException.class, () -> repository.findById(-1));
     }

@@ -4,6 +4,8 @@ import com.example.my_spring_server.MySQLConfig;
 import com.example.my_spring_server.foods.domain.FoodOrders;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.foods.infra.FoodsRepository;
+import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
+import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.orders.domain.OrderItems;
 import com.example.my_spring_server.orders.domain.OrderService;
@@ -18,11 +20,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderRepositoryTest {
-    MySQLConfig mySQLConfig = new MySQLConfig();
+    MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
 
-    UsersRepository usersRepository = new UsersRepository(mySQLConfig, new MyJdbcTemplate());
-    FoodsRepository foodsRepository = new FoodsRepository(mySQLConfig, new MyJdbcTemplate());
-    OrderRepository orderRepository = new OrderRepository(mySQLConfig, new MyJdbcTemplate());
+    UsersRepository usersRepository = new UsersRepository(dataSource, new MyJdbcTemplate());
+    FoodsRepository foodsRepository = new FoodsRepository(dataSource, new MyJdbcTemplate());
+    OrderRepository orderRepository = new OrderRepository(dataSource, new MyJdbcTemplate());
 
 
     @Test

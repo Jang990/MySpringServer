@@ -1,7 +1,7 @@
 package com.example.my_spring_server.orders.infra;
 
-import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
+import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
@@ -47,16 +47,16 @@ public class OrderRepository {
         return createOrderWithReflection(orderId, userId, totalPrice, createdAt, orderItems);
     };
 
-    private final DBConfig dbConfig;
+    private final MyDataSource myDataSource;
     private final MyJdbcTemplate myJdbcTemplate;
 
-    public OrderRepository(DBConfig dbConfig, MyJdbcTemplate myJdbcTemplate) {
-        this.dbConfig = dbConfig;
+    public OrderRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
+        this.myDataSource = myDataSource;
         this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Orders save(Orders order) {
-        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) { // Order 삽입 ps
+        try(Connection conn = myDataSource.getConnection()) { // Order 삽입 ps
             return save(conn, order);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -79,7 +79,7 @@ public class OrderRepository {
     }
 
     public Orders findById(long id) {
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try (Connection conn = myDataSource.getConnection()) {
             return myJdbcTemplate.queryForObject(conn, """
                     SELECT o.id, o.user_id, o.total_price, o.created_at, oi.id, oi.food_id, oi.price_at_order, oi.quantity
                     FROM orders o

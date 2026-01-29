@@ -3,6 +3,7 @@ package com.example.my_spring_server.foods.infra;
 import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
+import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.EmptyResultException;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
@@ -14,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FoodsRepository {
-    private final DBConfig dbConfig;
+    private final MyDataSource myDataSource;
     private final MyJdbcTemplate myJdbcTemplate;
 
     private static final MyRowMapper<Foods> foodRowMapper = (rs) -> {
@@ -24,13 +25,13 @@ public class FoodsRepository {
         return result;
     };
 
-    public FoodsRepository(DBConfig dbConfig, MyJdbcTemplate myJdbcTemplate) {
-        this.dbConfig = dbConfig;
+    public FoodsRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
+        this.myDataSource = myDataSource;
         this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Foods save(Foods food) {
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try (Connection conn = myDataSource.getConnection()) {
             MyKeyHolder myKeyHolder = new MyKeyHolder();
             myJdbcTemplate.update(conn, con -> {
                 PreparedStatement ps = conn.prepareStatement("""
@@ -53,7 +54,7 @@ public class FoodsRepository {
     }
 
     public Foods findById(long id) {
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try (Connection conn = myDataSource.getConnection()) {
             try {
                 return myJdbcTemplate.queryForObject(conn, """
                     SELECT id, name, price, stock
@@ -72,7 +73,7 @@ public class FoodsRepository {
         if(ids.isEmpty())
             throw new IllegalArgumentException("음식 검색 시 ids는 필수");
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try (Connection conn = myDataSource.getConnection()) {
             return myJdbcTemplate.query(conn, createFindAllSql(ids.size()), foodRowMapper, ids.toArray());
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -89,7 +90,7 @@ public class FoodsRepository {
     }
 
     public void updateStock(long foodId, int stock) {
-        try(Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
+        try(Connection conn = myDataSource.getConnection()) {
             updateStock(conn, foodId, stock);
         } catch (SQLException e) {
             throw new RuntimeException(e);
