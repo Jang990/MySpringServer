@@ -8,6 +8,7 @@
 ## ReadMe 
 * [기술적 요구사항.md](https://github.com/Jang990/MySpringServer/blob/main/tech-step-by-step.md)
 * [비즈니스 요구사항.md](https://github.com/Jang990/MySpringServer/blob/main/business-requirements.md)
+* [느낀점 + 정리 - 블로그 글](https://velog.io/@sdsd0908/JDBC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EA%B8%B0-%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%83%9D%EC%84%B1)
 
 <br>
 
