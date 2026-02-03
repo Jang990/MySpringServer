@@ -72,17 +72,13 @@ public class UsersRepository {
 
     public void updateBalance(long userId, int balance) {
         try (Connection conn = myDataSource.getConnection()) {
-            updateBalance(conn, userId, balance);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void updateBalance(Connection conn, long userId, int balance) throws SQLException {
-        myJdbcTemplate.update(conn, """
+            myJdbcTemplate.update(conn, """
                     UPDATE users
                     SET balance = ?
                     WHERE id = ?
                     """, balance, userId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
