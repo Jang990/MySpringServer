@@ -57,6 +57,7 @@ public class FoodOrderService {
             myTransactionManager.commit();
         } catch(RuntimeException e) {
             myTransactionManager.rollback();
+            throw e;
         }
     }
 }
