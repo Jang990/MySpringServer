@@ -42,6 +42,7 @@ class FoodOrderServiceTest {
             new MyTransactionManager(myTxDataSource)
     );
 
+    // 롤백 테스트를 위한 예외를 발생시키는 클래스
     static class MockFoodRepository extends FoodsRepository {
         public MockFoodRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
             super(myDataSource, myJdbcTemplate);
@@ -62,6 +63,7 @@ class FoodOrderServiceTest {
     @Test
     @DisplayName("주문 트랜잭션 롤백 테스트")
     void test() {
+        // given
         Users users = new Users("김아무개", 5000);
         usersRepository.save(users);
 
@@ -70,6 +72,7 @@ class FoodOrderServiceTest {
         foodsRepository.save(foods1);
         foodsRepository.save(foods2);
 
+        // when - then
         assertThrows(MockFoodRepository.MockException.class,
                 () -> foodOrderService.order(
                         users.getId(),
@@ -82,6 +85,7 @@ class FoodOrderServiceTest {
                 )
         );
 
+        // then - 롤백 체크
         assertEquals(5000, usersRepository.findById(users.getId()).getBalance());
         assertEquals(10, foodsRepository.findById(foods1.getId()).getStock());
         assertEquals(5, foodsRepository.findById(foods2.getId()).getStock());
