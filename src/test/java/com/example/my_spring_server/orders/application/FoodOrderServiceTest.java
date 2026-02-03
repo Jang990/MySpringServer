@@ -48,7 +48,7 @@ class FoodOrderServiceTest {
         }
 
         @Override
-        public void updateStock(Connection conn, long userId, int balance) throws SQLException {
+        public void updateStock(long userId, int balance) {
             throw new MockException("트랜잭션 테스트를 위한 예외");
         }
 
