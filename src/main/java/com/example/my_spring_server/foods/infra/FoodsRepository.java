@@ -91,17 +91,13 @@ public class FoodsRepository {
 
     public void updateStock(long foodId, int stock) {
         try(Connection conn = myDataSource.getConnection()) {
-            updateStock(conn, foodId, stock);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void updateStock(Connection conn, long foodId, int stock) throws SQLException {
-        myJdbcTemplate.update(conn, """
+            myJdbcTemplate.update(conn, """
                 UPDATE foods
                 SET stock = ?
                 WHERE id = ?
                 """, stock, foodId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
