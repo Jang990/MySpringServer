@@ -15,7 +15,6 @@ import com.example.my_spring_server.users.infra.UsersRepository;
 import java.util.List;
 
 public class FoodOrderService {
-    private final MyDataSource myDataSource;
     private final OrderService orderService;
 
     private final OrderRepository orderRepository;
@@ -25,14 +24,12 @@ public class FoodOrderService {
     private final MyTransactionManager myTransactionManager;
 
     public FoodOrderService(
-            MyDataSource myDataSource,
             OrderService orderService,
             OrderRepository orderRepository,
             FoodsRepository foodsRepository,
             UsersRepository usersRepository,
             MyTransactionManager myTransactionManager
     ) {
-        this.myDataSource = myDataSource;
         this.orderService = orderService;
         this.orderRepository = orderRepository;
         this.foodsRepository = foodsRepository;
