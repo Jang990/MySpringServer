@@ -32,9 +32,10 @@ class FoodOrderServiceTest {
     OrderService orderService = new OrderService();
 
     MyJdbcTemplate myJdbcTemplate = new MyJdbcTemplate();
+    MyJdbcTemplate myJdbcTemplate_TEMP = new MyJdbcTemplate(myTxDataSource);
     OrderRepository orderRepository = new OrderRepository(myTxDataSource, myJdbcTemplate);
     UsersRepository usersRepository = new UsersRepository(myTxDataSource, myJdbcTemplate);
-    FoodsRepository foodsRepository = new MockFoodRepository(myTxDataSource, myJdbcTemplate); // 예외 발생 객체
+    FoodsRepository foodsRepository = new MockFoodRepository(myJdbcTemplate_TEMP); // 예외 발생 객체
 
     FoodOrderService foodOrderService = new FoodOrderService(
             orderService,
@@ -44,8 +45,8 @@ class FoodOrderServiceTest {
 
     // 롤백 테스트를 위한 예외를 발생시키는 클래스
     static class MockFoodRepository extends FoodsRepository {
-        public MockFoodRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
-            super(myDataSource, myJdbcTemplate);
+        public MockFoodRepository(MyJdbcTemplate myJdbcTemplate) {
+            super(myJdbcTemplate);
         }
 
         @Override
