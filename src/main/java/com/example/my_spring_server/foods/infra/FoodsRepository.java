@@ -1,9 +1,7 @@
 package com.example.my_spring_server.foods.infra;
 
-import com.example.my_spring_server.DBConfig;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
-import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.EmptyResultException;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
@@ -11,11 +9,9 @@ import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
 
 import java.sql.*;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public class FoodsRepository {
-    private final MyDataSource myDataSource;
     private final MyJdbcTemplate myJdbcTemplate;
 
     private static final MyRowMapper<Foods> foodRowMapper = (rs) -> {
@@ -25,47 +21,38 @@ public class FoodsRepository {
         return result;
     };
 
-    public FoodsRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
-        this.myDataSource = myDataSource;
+    public FoodsRepository(MyJdbcTemplate myJdbcTemplate) {
         this.myJdbcTemplate = myJdbcTemplate;
     }
 
     public Foods save(Foods food) {
-        try (Connection conn = myDataSource.getConnection()) {
-            MyKeyHolder myKeyHolder = new MyKeyHolder();
-            myJdbcTemplate.update(conn, con -> {
-                PreparedStatement ps = conn.prepareStatement("""
+        MyKeyHolder myKeyHolder = new MyKeyHolder();
+        myJdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement("""
                         INSERT INTO foods(name, price, stock)
                         VALUES
                         (?, ?, ?)
                         """, Statement.RETURN_GENERATED_KEYS);
 
-                ps.setString(1, food.getName());
-                ps.setInt(2, food.getPrice());
-                ps.setInt(3, food.getStock());
-                return ps;
-            }, myKeyHolder);
+            ps.setString(1, food.getName());
+            ps.setInt(2, food.getPrice());
+            ps.setInt(3, food.getStock());
+            return ps;
+        }, myKeyHolder);
 
-            MyEntityIdInjector.injectId(food, myKeyHolder.getId());
-            return food;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        MyEntityIdInjector.injectId(food, myKeyHolder.getId());
+        return food;
     }
 
     public Foods findById(long id) {
-        try (Connection conn = myDataSource.getConnection()) {
-            try {
-                return myJdbcTemplate.queryForObject(conn, """
+        try {
+            return myJdbcTemplate.queryForObject("""
                     SELECT id, name, price, stock
                     FROM foods
                     WHERE id = ?
                     """, foodRowMapper, id);
-            } catch(EmptyResultException e) {
-                throw new IllegalArgumentException("음식을 찾을 수 없습니다. userId=%d".formatted(id), e);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch(EmptyResultException e) {
+            throw new IllegalArgumentException("음식을 찾을 수 없습니다. userId=%d".formatted(id), e);
         }
     }
 
@@ -73,11 +60,7 @@ public class FoodsRepository {
         if(ids.isEmpty())
             throw new IllegalArgumentException("음식 검색 시 ids는 필수");
 
-        try (Connection conn = myDataSource.getConnection()) {
-            return myJdbcTemplate.query(conn, createFindAllSql(ids.size()), foodRowMapper, ids.toArray());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return myJdbcTemplate.query(createFindAllSql(ids.size()), foodRowMapper, ids.toArray());
     }
 
     private String createFindAllSql(int idsSize) {
@@ -90,15 +73,7 @@ public class FoodsRepository {
     }
 
     public void updateStock(long foodId, int stock) {
-        try(Connection conn = myDataSource.getConnection()) {
-            updateStock(conn, foodId, stock);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void updateStock(Connection conn, long foodId, int stock) throws SQLException {
-        myJdbcTemplate.update(conn, """
+        myJdbcTemplate.update("""
                 UPDATE foods
                 SET stock = ?
                 WHERE id = ?

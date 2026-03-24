@@ -1,6 +1,10 @@
 package com.example.my_spring_server.my.jdbctemplate;
 
 
+import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
+import com.example.my_spring_server.my.datasource.MyDataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +13,31 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MyJdbcTemplate {
+    private final MyDataSource myDataSource;
+
+    public MyJdbcTemplate() {
+        this.myDataSource = new DriverManagerDataSource(new MySQLConfig());
+    }
+
+    public MyJdbcTemplate(MyDataSource myDataSource) {
+        this.myDataSource = myDataSource;
+    }
+
     public int update(Connection conn, MyPreparedStatementCreator psc, MyKeyHolder myKeyHolder) {
         try(PreparedStatement ps = psc.createPreparedStatement(conn)) {
+            int result = ps.executeUpdate();
+            myKeyHolder.setId(findGeneratedId(ps));
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int update(MyPreparedStatementCreator psc, MyKeyHolder myKeyHolder) {
+        try(
+                Connection conn = myDataSource.getConnection();
+                PreparedStatement ps = psc.createPreparedStatement(conn)
+        ) {
             int result = ps.executeUpdate();
             myKeyHolder.setId(findGeneratedId(ps));
             return result;
@@ -36,6 +63,18 @@ public class MyJdbcTemplate {
         }
     }
 
+    public int update(String sql, Object... params) {
+        try(
+                Connection conn = myDataSource.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            setArgsInPreparedStatement(ps, params);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> T queryForObject(Connection conn, String sql, MyRowMapper<T> mapper, Object... params) {
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
             setArgsInPreparedStatement(ps, params);
@@ -53,8 +92,46 @@ public class MyJdbcTemplate {
         }
     }
 
+    public <T> T queryForObject(String sql, MyRowMapper<T> mapper, Object... params) {
+        try(
+                Connection conn = myDataSource.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            setArgsInPreparedStatement(ps, params);
+
+            List<T> result = new LinkedList<>();
+            try(ResultSet rs = ps.executeQuery()) {
+                boolean hasData = rs.next();
+                if(hasData)
+                    return mapper.mapRow(rs);
+                else
+                    throw new EmptyResultException();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> List<T> query(Connection conn, String sql, MyRowMapper<T> mapper, Object... params) {
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
+            setArgsInPreparedStatement(ps, params);
+
+            List<T> result = new LinkedList<>();
+            try(ResultSet rs = ps.executeQuery()) {
+                while (rs.next())
+                    result.add(mapper.mapRow(rs));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> List<T> query(String sql, MyRowMapper<T> mapper, Object... params) {
+        try(
+                Connection conn = myDataSource.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
             setArgsInPreparedStatement(ps, params);
 
             List<T> result = new LinkedList<>();

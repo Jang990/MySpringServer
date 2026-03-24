@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FoodsRepositoryTest {
     MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
-    FoodsRepository foodsRepository = new FoodsRepository(dataSource, new MyJdbcTemplate());
+    FoodsRepository foodsRepository = new FoodsRepository(new MyJdbcTemplate(dataSource));
 
     @Test
     void 음식_저장() {

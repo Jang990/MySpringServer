@@ -20,11 +20,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderRepositoryTest {
-    MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
+    MyJdbcTemplate myJdbcTemplate = new MyJdbcTemplate(new DriverManagerDataSource(new MySQLConfig()));
 
-    UsersRepository usersRepository = new UsersRepository(dataSource, new MyJdbcTemplate());
-    FoodsRepository foodsRepository = new FoodsRepository(dataSource, new MyJdbcTemplate());
-    OrderRepository orderRepository = new OrderRepository(dataSource, new MyJdbcTemplate());
+    UsersRepository usersRepository = new UsersRepository(myJdbcTemplate);
+    FoodsRepository foodsRepository = new FoodsRepository(myJdbcTemplate);
+    OrderRepository orderRepository = new OrderRepository(myJdbcTemplate);
 
 
     @Test
