@@ -34,7 +34,7 @@ class FoodOrderServiceTest {
     MyJdbcTemplate myJdbcTemplate = new MyJdbcTemplate();
     MyJdbcTemplate myJdbcTemplate_TEMP = new MyJdbcTemplate(myTxDataSource);
     OrderRepository orderRepository = new OrderRepository(myTxDataSource, myJdbcTemplate);
-    UsersRepository usersRepository = new UsersRepository(myTxDataSource, myJdbcTemplate);
+    UsersRepository usersRepository = new UsersRepository(myJdbcTemplate_TEMP);
     FoodsRepository foodsRepository = new MockFoodRepository(myJdbcTemplate_TEMP); // 예외 발생 객체
 
     FoodOrderService foodOrderService = new FoodOrderService(

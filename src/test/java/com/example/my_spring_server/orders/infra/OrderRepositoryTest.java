@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderRepositoryTest {
     MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
 
-    UsersRepository usersRepository = new UsersRepository(dataSource, new MyJdbcTemplate());
+    UsersRepository usersRepository = new UsersRepository(new MyJdbcTemplate(dataSource));
     FoodsRepository foodsRepository = new FoodsRepository(new MyJdbcTemplate(dataSource));
     OrderRepository orderRepository = new OrderRepository(dataSource, new MyJdbcTemplate());
 

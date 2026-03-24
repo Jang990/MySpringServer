@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UsersRepositoryTest {
     MyDataSource dataSource = new DriverManagerDataSource(new MySQLConfig());
-    UsersRepository repository = new UsersRepository(dataSource, new MyJdbcTemplate());
+    UsersRepository repository = new UsersRepository(new MyJdbcTemplate(dataSource));
 
     @Test
     void Users_저장_조회() {
