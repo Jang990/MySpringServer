@@ -15,12 +15,9 @@ import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequest;
 import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequests;
 import com.example.my_spring_server.users.domain.Users;
 import com.example.my_spring_server.users.infra.UsersRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,11 +28,10 @@ class FoodOrderServiceTest {
 
     OrderService orderService = new OrderService();
 
-    MyJdbcTemplate myJdbcTemplate = new MyJdbcTemplate();
-    MyJdbcTemplate myJdbcTemplate_TEMP = new MyJdbcTemplate(myTxDataSource);
-    OrderRepository orderRepository = new OrderRepository(myTxDataSource, myJdbcTemplate);
-    UsersRepository usersRepository = new UsersRepository(myJdbcTemplate_TEMP);
-    FoodsRepository foodsRepository = new MockFoodRepository(myJdbcTemplate_TEMP); // 예외 발생 객체
+    MyJdbcTemplate myJdbcTemplate = new MyJdbcTemplate(myTxDataSource);
+    OrderRepository orderRepository = new OrderRepository(myJdbcTemplate);
+    UsersRepository usersRepository = new UsersRepository(myJdbcTemplate);
+    FoodsRepository foodsRepository = new MockFoodRepository(myJdbcTemplate); // 예외 발생 객체
 
     FoodOrderService foodOrderService = new FoodOrderService(
             orderService,

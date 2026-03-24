@@ -1,7 +1,6 @@
 package com.example.my_spring_server.orders.infra;
 
 import com.example.my_spring_server.jpa.MyEntityIdInjector;
-import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
@@ -47,48 +46,42 @@ public class OrderRepository {
         return createOrderWithReflection(orderId, userId, totalPrice, createdAt, orderItems);
     };
 
-    private final MyDataSource myDataSource;
     private final MyJdbcTemplate myJdbcTemplate;
 
-    public OrderRepository(MyDataSource myDataSource, MyJdbcTemplate myJdbcTemplate) {
-        this.myDataSource = myDataSource;
+    public OrderRepository(MyJdbcTemplate myJdbcTemplate) {
         this.myJdbcTemplate = myJdbcTemplate;
     }
 
+    /**
+     * 트랜잭션 전파 기능이 없으므로 트랜잭션 없이 save 호출 시 오류 발생 가능
+     * TODO : 둘 중 하나의 옵션으로 구현 필요
+     *  1. Order와 OrderItem Repository 분리하기
+     *  2. 트랜잭션 전파 기능 추가하기
+     */
     public Orders save(Orders order) {
-        try(Connection conn = myDataSource.getConnection()) { // Order 삽입 ps
-            return save(conn, order);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Orders save(Connection conn, Orders order) throws SQLException {
+        // 트랜잭션 문제
         try {
-            conn.setAutoCommit(false);
+//            conn.setAutoCommit(false);
 
-            insertOrder(conn, order);
-            insertOrderItems(conn, order.getOrderItems(), order.getId());
-            
-            conn.commit();
+            insertOrder(order);
+            insertOrderItems(order.getOrderItems(), order.getId());
+
+//            conn.commit();
             return order;
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (RuntimeException e) {
+//            conn.rollback();
             throw e;
         }
     }
 
+
     public Orders findById(long id) {
-        try (Connection conn = myDataSource.getConnection()) {
-            return myJdbcTemplate.queryForObject(conn, """
+        return myJdbcTemplate.queryForObject("""
                     SELECT o.id, o.user_id, o.total_price, o.created_at, oi.id, oi.food_id, oi.price_at_order, oi.quantity
                     FROM orders o
                     LEFT OUTER JOIN order_items oi ON o.id = oi.order_id
                     WHERE o.id = ?
                     """, ordersMyRowMapper, id);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static Orders createOrderWithReflection(Long orderId, long userId, int totalPrice, LocalDateTime createdAt, List<OrderItems> orderItems) {
@@ -126,12 +119,11 @@ public class OrderRepository {
     }
 
     // Order 삽입
-    private void insertOrder(Connection conn, Orders order) throws SQLException {
+    private void insertOrder(Orders order) {
         MyKeyHolder orderKeyHolder = new MyKeyHolder();
         myJdbcTemplate.update(
-                conn,
                 con -> {
-                    PreparedStatement ps = conn.prepareStatement("""
+                    PreparedStatement ps = con.prepareStatement("""
                             INSERT INTO orders (user_id, total_price, created_at)
                             VALUES
                             (?, ?, ?)
@@ -146,13 +138,12 @@ public class OrderRepository {
     }
 
     // OrderItems 삽입
-    private void insertOrderItems(Connection conn, List<OrderItems> orderItems, long orderId) throws SQLException {
+    private void insertOrderItems(List<OrderItems> orderItems, long orderId) {
         for (OrderItems orderItem : orderItems) {
             MyKeyHolder orderItemKeyHolder = new MyKeyHolder();
             myJdbcTemplate.update(
-                    conn,
                     con -> {
-                        PreparedStatement psOrderItems = conn.prepareStatement("""
+                        PreparedStatement psOrderItems = con.prepareStatement("""
                                     INSERT INTO order_items (order_id, food_id, price_at_order, quantity)
                                     VALUES
                                     (?, ?, ?, ?)
