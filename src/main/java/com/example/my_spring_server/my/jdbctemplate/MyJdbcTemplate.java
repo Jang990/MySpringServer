@@ -1,6 +1,10 @@
 package com.example.my_spring_server.my.jdbctemplate;
 
 
+import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
+import com.example.my_spring_server.my.datasource.MyDataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +13,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MyJdbcTemplate {
+    private final MyDataSource myDataSource;
+
+    public MyJdbcTemplate() {
+        this.myDataSource = new DriverManagerDataSource(new MySQLConfig());
+    }
+
+    public MyJdbcTemplate(MyDataSource myDataSource) {
+        this.myDataSource = myDataSource;
+    }
+
     public int update(Connection conn, MyPreparedStatementCreator psc, MyKeyHolder myKeyHolder) {
         try(PreparedStatement ps = psc.createPreparedStatement(conn)) {
             int result = ps.executeUpdate();
