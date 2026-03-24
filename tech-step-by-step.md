@@ -57,7 +57,41 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 <br>
 <br>
 
-### STEP 4. Connection Pool
+### STEP 4. Transaction Manager
+
+핵심 구간
+
+* 5-1. startTransaction, commit, rollback을 제공하는 TransactionManager 생성 (with ThreadLocal)
+* 5-2. ThreadLocal<Connection>을 관리하는 ConnectionThreadLocal 생성
+* 5-3. DataSource에서 트랜잭션을 지원하도록 구현
+* 5-4. 애플리케이션 레벨에서 Connection 코드 제거
+* 5-5. MyJdbcTemplate에서 커넥션을 직접 받지 않고 MyDataSource를 받도록 변경
+
+🎯 목표
+
+“트랜잭션의 영향을 제거해서 애플리케이션 레벨에 Connection 코드를 제거하기”
+
+"MyJdbcTemplate 내부에서 DataSource를 직접 사용하도록 변경하기"
+
+<br>
+<br>
+
+### STEP 5. @Transactional
+
+선언적 트랜잭션
+
+* 6-1. @MyTransactional 정의
+* 6-2. 리플렉션으로 애노테이션 탐지
+* 6-3. 실행 전후에 TX 처리
+
+🎯 목표
+
+“AOP가 왜 필요한지 체감”
+
+<br>
+<br>
+
+### STEP 6. Connection Pool
 
 성능 & 자원 관리 단계
 
@@ -70,38 +104,6 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 🎯 목표
 
 “왜 커넥션 풀 없으면 서비스가 죽는지”
-
-<br>
-<br>
-
-### STEP 5. Transaction Manager
-
-핵심 구간
-
-* 5-1. TransactionManager 인터페이스
-* 5-2. ThreadLocal로 Connection 관리
-* 5-3. begin / commit / rollback
-* 5-4. REQUIRED 전파 구현
-* 5-5. Repository에서 직접 커넥션 못 열게 차단
-
-🎯 목표
-
-“트랜잭션 = 스레드 범위”
-
-<br>
-<br>
-
-### STEP 6. @Transactional
-
-선언적 트랜잭션
-
-* 6-1. @MyTransactional 정의
-* 6-2. 리플렉션으로 애노테이션 탐지
-* 6-3. 실행 전후에 TX 처리
-
-🎯 목표
-
-“AOP가 왜 필요한지 체감”
 
 <br>
 <br>
