@@ -6,11 +6,11 @@ import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
 import com.example.my_spring_server.users.domain.Users;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
-@Component
+@Repository
 public class UsersRepository {
     private static final MyRowMapper<Users> userRowMapper = rs -> {
         long userId = rs.getLong(1);

@@ -6,13 +6,13 @@ import com.example.my_spring_server.my.jdbctemplate.EmptyResultException;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
-@Component
+@Repository
 public class FoodsRepository {
     private final MyJdbcTemplate myJdbcTemplate;
 
