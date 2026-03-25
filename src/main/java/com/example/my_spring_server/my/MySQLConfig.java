@@ -1,4 +1,4 @@
-package com.example.my_spring_server;
+package com.example.my_spring_server.my;
 
 public class MySQLConfig implements DBConfig {
     @Override

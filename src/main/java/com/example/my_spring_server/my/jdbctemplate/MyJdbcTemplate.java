@@ -1,7 +1,7 @@
 package com.example.my_spring_server.my.jdbctemplate;
 
 
-import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.MySQLConfig;
 import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
 import com.example.my_spring_server.my.datasource.MyDataSource;
 

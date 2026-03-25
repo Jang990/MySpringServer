@@ -1,6 +1,6 @@
 package com.example.my_spring_server.foods.infra;
 
-import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.MySQLConfig;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
 import com.example.my_spring_server.my.datasource.MyDataSource;

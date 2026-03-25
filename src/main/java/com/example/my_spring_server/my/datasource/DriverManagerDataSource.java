@@ -1,6 +1,6 @@
 package com.example.my_spring_server.my.datasource;
 
-import com.example.my_spring_server.DBConfig;
+import com.example.my_spring_server.my.DBConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

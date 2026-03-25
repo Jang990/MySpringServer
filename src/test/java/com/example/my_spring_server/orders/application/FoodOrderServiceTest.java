@@ -1,7 +1,7 @@
 package com.example.my_spring_server.orders.application;
 
-import com.example.my_spring_server.DBConfig;
-import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.DBConfig;
+import com.example.my_spring_server.my.MySQLConfig;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.foods.infra.FoodsRepository;
 import com.example.my_spring_server.my.datasource.DriverManagerDataSource;

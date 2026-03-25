@@ -1,11 +1,10 @@
 package com.example.my_spring_server.orders.infra;
 
-import com.example.my_spring_server.MySQLConfig;
+import com.example.my_spring_server.my.MySQLConfig;
 import com.example.my_spring_server.foods.domain.FoodOrders;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.foods.infra.FoodsRepository;
 import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
-import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
 import com.example.my_spring_server.orders.domain.OrderItems;
 import com.example.my_spring_server.orders.domain.OrderService;
