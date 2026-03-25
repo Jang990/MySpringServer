@@ -4,7 +4,9 @@ import com.example.my_spring_server.users.domain.Users;
 import com.example.my_spring_server.users.infra.UsersRepository;
 import com.example.my_spring_server.users.presentation.dto.UserCreationRequest;
 import com.example.my_spring_server.users.presentation.dto.UserResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UsersService {
     private final UsersRepository usersRepository;
 
