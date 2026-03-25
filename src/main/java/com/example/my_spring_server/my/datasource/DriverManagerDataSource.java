@@ -1,11 +1,13 @@
 package com.example.my_spring_server.my.datasource;
 
 import com.example.my_spring_server.my.DBConfig;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Component
 public class DriverManagerDataSource implements MyDataSource {
     private final DBConfig dbConfig;
 

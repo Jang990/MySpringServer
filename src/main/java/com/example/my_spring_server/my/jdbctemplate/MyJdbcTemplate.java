@@ -4,6 +4,7 @@ package com.example.my_spring_server.my.jdbctemplate;
 import com.example.my_spring_server.my.MySQLConfig;
 import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
 import com.example.my_spring_server.my.datasource.MyDataSource;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+@Component
 public class MyJdbcTemplate {
     private final MyDataSource myDataSource;
 
