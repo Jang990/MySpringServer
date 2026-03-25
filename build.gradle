@@ -47,3 +47,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.withType(JavaCompile).configureEach {
+	// getParameterNames() 사용을 위한 설정
+	options.compilerArgs.add("-parameters")
+}
