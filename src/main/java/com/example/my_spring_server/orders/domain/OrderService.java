@@ -2,10 +2,12 @@ package com.example.my_spring_server.orders.domain;
 
 import com.example.my_spring_server.foods.domain.FoodOrders;
 import com.example.my_spring_server.users.domain.Users;
+import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Service
 public class OrderService {
     // 음식 개수 감소 + 사용자 잔액 감소 + 주문 저장
     public Orders order(Users user, List<FoodOrders> foodOrders) {

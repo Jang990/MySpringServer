@@ -11,9 +11,12 @@ import com.example.my_spring_server.orders.infra.OrderRepository;
 import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequests;
 import com.example.my_spring_server.users.domain.Users;
 import com.example.my_spring_server.users.infra.UsersRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class FoodOrderService {
     private final OrderService orderService;
 
