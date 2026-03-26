@@ -1,5 +1,8 @@
-package com.example.my_spring_server;
+package com.example.my_spring_server.my;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MySQLConfig implements DBConfig {
     @Override
     public String getUrl() {

@@ -2,11 +2,13 @@ package com.example.my_spring_server.my.datasource.transaction;
 
 import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.transaction.MyConnectionThreadLocal;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Component
 public class MyTransactionAwareDataSourceProxy implements MyDataSource {
     private final MyDataSource delegate;
 

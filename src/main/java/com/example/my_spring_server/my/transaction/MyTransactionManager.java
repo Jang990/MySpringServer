@@ -1,15 +1,19 @@
 package com.example.my_spring_server.my.transaction;
 
 import com.example.my_spring_server.my.datasource.MyDataSource;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Component
 public class MyTransactionManager {
     private final MyDataSource myDataSource;
 
-    public MyTransactionManager(MyDataSource myDataSource) {
-        this.myDataSource = myDataSource;
+    public MyTransactionManager(
+            MyDataSource myTransactionAwareDataSourceProxy
+    ) {
+        this.myDataSource = myTransactionAwareDataSourceProxy;
     }
 
     public void startTransaction() {

@@ -6,6 +6,7 @@ import com.example.my_spring_server.my.jdbctemplate.MyKeyHolder;
 import com.example.my_spring_server.my.jdbctemplate.MyRowMapper;
 import com.example.my_spring_server.orders.domain.OrderItems;
 import com.example.my_spring_server.orders.domain.Orders;
+import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+@Repository
 public class OrderRepository {
     private static final MyRowMapper<Orders> ordersMyRowMapper = rs -> {
         Long orderId = null;
