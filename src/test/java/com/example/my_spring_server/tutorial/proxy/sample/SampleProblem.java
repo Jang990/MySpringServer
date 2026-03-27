@@ -10,6 +10,7 @@ public class SampleProblem {
     void sample1() {
         AAAInter AAA = new AAAImpl();
 
+        System.out.println();
         System.out.println("트랜잭션 시작!");
         String result = AAA.helloA();
         System.out.println("트랜잭션 종료! => " + result);
@@ -20,6 +21,7 @@ public class SampleProblem {
     void sample2() {
         BBBInter BBB = new BBBImpl();
 
+        System.out.println();
         System.out.println("트랜잭션 시작!");
         String result = BBB.printB();
         System.out.println("트랜잭션 종료! => " + result);
