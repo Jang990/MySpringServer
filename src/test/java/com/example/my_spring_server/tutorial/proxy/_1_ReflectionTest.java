@@ -13,11 +13,10 @@ public class _1_ReflectionTest {
     void sample1() throws Exception {
         AAAInter AAA = new AAAImpl();
 
-        process(
-                AAA,
-                "com.example.my_spring_server.tutorial.proxy.sample.AAAImpl",
-                "helloA"
-        );
+        // 클래스 메타정보 불러오기
+        Class targetClass = Class.forName("com.example.my_spring_server.tutorial.proxy.sample.AAAImpl");
+        Method method = targetClass.getMethod("helloA", String.class); // 클레스 > 메소드 메타정보 불러오기
+        process(AAA, method, new Object[]{"REFLECTION"});
     }
 
     @Test
@@ -25,21 +24,17 @@ public class _1_ReflectionTest {
     void sample2() throws Exception {
         BBBInter BBB = new BBBImpl();
 
-        process(
-                BBB,
-                "com.example.my_spring_server.tutorial.proxy.sample.BBBImpl",
-                "printB"
-        );
+        Class targetClass = Class.forName("com.example.my_spring_server.tutorial.proxy.sample.BBBImpl");
+        Method method = targetClass.getMethod("printB");
+        process(BBB, method, new Object[]{});
     }
 
     // 부가기능을 한 곳으로!
-    void process(Object target, String className, String methodName) throws Exception {
+    void process(Object target, Method method, Object[] args) throws Exception {
         System.out.println();
         System.out.println("트랜잭션 시작!");
 
-        Class targetClass = Class.forName(className); // 클래스 메타정보 불러오기
-        Method method = targetClass.getMethod(methodName); // 클레스 > 메소드 메타정보 불러오기
-        Object result = method.invoke(target); // (메타정보를 기반으로) Object target의 메소드 실행
+        Object result = method.invoke(target, args); // (메타정보를 기반으로) Object target의 메소드 실행
 
         System.out.println("트랜잭션 종료! => " + result);
     }
