@@ -12,7 +12,7 @@ public class SampleProblem {
 
         System.out.println();
         System.out.println("트랜잭션 시작!");
-        String result = AAA.helloA();
+        String result = AAA.helloA("TEMP");
         System.out.println("트랜잭션 종료! => " + result);
     }
 
