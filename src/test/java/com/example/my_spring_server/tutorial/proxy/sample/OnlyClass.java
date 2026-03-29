@@ -5,4 +5,8 @@ public class OnlyClass {
         System.out.println(prefix + "_인터페이스가 없어요!");
         return "OnlyClass";
     }
+
+    public void hello() {
+        System.out.println("안녕하세요.");
+    }
 }
