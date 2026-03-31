@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
@@ -31,7 +30,6 @@ public class _5_AdvisorTest {
         );
 
         OnlyClass proxy = (OnlyClass) proxyFactory.getProxy();
-        AspectJExpressionPointcut
         proxy.service("OnlyClass");
         proxy.hello();
     }
