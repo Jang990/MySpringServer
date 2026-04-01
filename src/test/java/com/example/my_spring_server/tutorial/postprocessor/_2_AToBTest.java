@@ -75,7 +75,6 @@ public class _2_AToBTest {
 
         @Override
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-            CommonAnnotationBeanPostProcessor
             System.out.println("AToB 프로세서 - 빈 초기화 콜백 후 : beanName=" + beanName);
             if(bean instanceof A)
                 return new B(); // beanName 그대로 B 객체로 교체됨
