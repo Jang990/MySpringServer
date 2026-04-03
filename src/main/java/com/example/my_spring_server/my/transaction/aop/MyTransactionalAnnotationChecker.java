@@ -9,7 +9,7 @@ public class MyTransactionalAnnotationChecker {
 
     private static final Class<MyTransactional> ANNOTATION_TYPE = MyTransactional.class;
 
-    public boolean check(Object obj) {
+    public boolean hasAnnotation(Object obj) {
         if(obj == null)
             return false;
 
