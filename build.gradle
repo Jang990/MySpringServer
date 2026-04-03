@@ -27,7 +27,8 @@ dependencies {
 	// Spring Test (ApplicationContext 로딩, @ExtendWith 등)
 	testImplementation 'org.springframework:spring-test:6.1.5'
 	// Mockito
-	testImplementation 'org.mockito:mockito-core:5.11.0'
+	testImplementation 'org.mockito:mockito-core:5.11.0' // Mockito.mock, @Mock, @InjectionMock ...
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0' // @ExtendWith(MockitoExtension.class)
 	/* ****************************************************** */
 
 	// starter를 안쓰기 때문에 버전을 명시적으로 설정
