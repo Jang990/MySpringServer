@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@SpringJUnitConfig
+@SpringJUnitConfig // 내부 config를 바탕으로 컨테이너를 불러옴
 public class MyTransactionalProxyTest {
     @Autowired private NonMyTransactionalObject nonMyTransactionalObject;
     @Autowired private ClassMyTransactionalObject classMyTransactionalObject;
@@ -32,18 +32,18 @@ public class MyTransactionalProxyTest {
 
 
     @Test
-    @DisplayName("어노테이션이 없는 클래스는 트랜잭션 적용 안됨")
+    @DisplayName("어노테이션 X 클래스 - 트랜잭션 적용 안됨")
     public void test1() {
         // when
         nonMyTransactionalObject.hello();
 
         // given
         assertThat(AopUtils.isAopProxy(nonMyTransactionalObject)).isFalse();
-        verify(mockTransactionManager, never()).startTransaction();
+        verify(mockTransactionManager, never()).startTransaction(); // 트랜잭션 X
     }
 
     @Test
-    @DisplayName("클래스 어노테이션이 붙어있으면 트랜잭션 적용")
+    @DisplayName("클래스 어노테이션 O - 트랜잭션 적용")
     public void test2() {
         // when
         classMyTransactionalObject.hello();
@@ -55,7 +55,7 @@ public class MyTransactionalProxyTest {
     }
 
     @Test
-    @DisplayName("클래스 어노테이션이 붙어있으면 모든 메서드 트랜잭션 적용")
+    @DisplayName("클래스 어노테이션 O - 모든 메서드 트랜잭션 적용")
     public void test3() {
         // when - 메서드 2번 호출
         classMyTransactionalObject.hello();
@@ -68,7 +68,7 @@ public class MyTransactionalProxyTest {
     }
 
     @Test
-    @DisplayName("트랜잭션 적용 시 예외가 발생하면 롤백 호출")
+    @DisplayName("클래스 어노테이션 O - 예외 발생 시 롤백")
     public void test4() {
         // when - 메서드 2번 호출
         assertThatThrownBy(() -> classMyTransactionalObject.error());
@@ -80,7 +80,7 @@ public class MyTransactionalProxyTest {
     }
 
     @Test
-    @DisplayName("메소드 어노테이션은 붙어있는 메소드만 적용 - 적용되지 않은 메소드 호출")
+    @DisplayName("메소드 어노테이션 O - 적용되지 않은 메소드 호출")
     public void test5() {
         // given
         methodMyTransactionalObject.hello();
@@ -92,7 +92,7 @@ public class MyTransactionalProxyTest {
     }
 
     @Test
-    @DisplayName("메소드 어노테이션은 붙어있는 메소드만 적용 - 적용된 메소드 호출")
+    @DisplayName("메소드 어노테이션 O - 적용된 메소드 호출")
     public void test6() {
         // when
         methodMyTransactionalObject.service();
