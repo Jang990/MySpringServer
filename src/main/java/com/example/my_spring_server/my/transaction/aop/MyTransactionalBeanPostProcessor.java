@@ -7,7 +7,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
+@Deprecated
 public class MyTransactionalBeanPostProcessor implements BeanPostProcessor {
     private final MyTransactionalAnnotationChecker myTransactionalAnnotationChecker;
     private final MyTransactionalAdvice myTransactionalAdvice;

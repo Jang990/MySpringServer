@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
-@Component
+//@Component
+@Deprecated
 public class MyTransactionalAnnotationChecker {
 
     private static final Class<MyTransactional> ANNOTATION_TYPE = MyTransactional.class;

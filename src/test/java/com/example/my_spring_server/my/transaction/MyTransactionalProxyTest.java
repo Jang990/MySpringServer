@@ -7,6 +7,7 @@ import com.example.my_spring_server.my.transaction.aop.MyTransactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -150,6 +151,11 @@ public class MyTransactionalProxyTest {
         @Primary
         public MyTransactionManager mockTransactionManager() {
             return mock(MyTransactionManager.class);
+        }
+
+        @Bean
+        public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+            return new DefaultAdvisorAutoProxyCreator();
         }
     }
 }

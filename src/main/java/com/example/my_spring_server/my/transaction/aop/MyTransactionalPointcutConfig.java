@@ -1,7 +1,9 @@
 package com.example.my_spring_server.my.transaction.aop;
 
+import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.ComposablePointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,5 +18,13 @@ public class MyTransactionalPointcutConfig {
         Pointcut classPointcut = new AnnotationMatchingPointcut(MyTransactional.class, true); // 클래스
         Pointcut methodPointcut = new AnnotationMatchingPointcut(null, MyTransactional.class); // 메소드
         return new ComposablePointcut(classPointcut).union(methodPointcut); // 클래스 OR 메소드
+    }
+
+    @Bean
+    public Advisor myTransactionalAdvisor(MyTransactionalAdvice myTransactionalAdvice) {
+        return new DefaultPointcutAdvisor(
+                myTransactionalPointcut(),
+                myTransactionalAdvice
+        );
     }
 }
