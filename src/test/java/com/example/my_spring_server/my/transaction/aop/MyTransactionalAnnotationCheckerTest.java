@@ -27,7 +27,9 @@ class MyTransactionalAnnotationCheckerTest {
         );
     }
 
-    static class NonMyTransactionalObject { }
+    static class NonMyTransactionalObject {
+        public void hello() { }
+    }
 
     @MyTransactional
     static class ClassMyTransactionalObject {
