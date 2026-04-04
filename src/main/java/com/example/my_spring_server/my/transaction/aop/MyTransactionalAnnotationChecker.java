@@ -2,9 +2,11 @@ package com.example.my_spring_server.my.transaction.aop;
 
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
+@Component
 public class MyTransactionalAnnotationChecker {
 
     private static final Class<MyTransactional> ANNOTATION_TYPE = MyTransactional.class;

@@ -5,7 +5,9 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MyTransactionalBeanPostProcessor implements BeanPostProcessor {
     private final MyTransactionalAnnotationChecker myTransactionalAnnotationChecker;
     private final MyTransactionalAdvice myTransactionalAdvice;
