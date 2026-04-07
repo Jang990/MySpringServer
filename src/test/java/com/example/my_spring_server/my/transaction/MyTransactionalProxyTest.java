@@ -4,13 +4,13 @@ import com.example.my_spring_server.my.MySQLConfig;
 import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
 import com.example.my_spring_server.my.datasource.MyDataSource;
 import com.example.my_spring_server.my.transaction.aop.MyTransactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.assertj.core.api.Assertions.*;
@@ -24,12 +24,8 @@ public class MyTransactionalProxyTest {
     @Autowired private ClassMyTransactionalObject classMyTransactionalObject;
     @Autowired private MethodMyTransactionalObject methodMyTransactionalObject;
 
-    @Autowired private MyTransactionManager mockTransactionManager;
 
-    @BeforeEach
-    void setUp() {
-        reset(mockTransactionManager);
-    }
+    @MockitoBean private MyTransactionManager mockTransactionManager;
 
 
     @Test
@@ -145,12 +141,6 @@ public class MyTransactionalProxyTest {
         @Bean
         public MyDataSource myDataSource() {
             return new DriverManagerDataSource(new MySQLConfig());
-        }
-
-        @Bean
-        @Primary
-        public MyTransactionManager mockTransactionManager() {
-            return mock(MyTransactionManager.class);
         }
 
         @Bean
