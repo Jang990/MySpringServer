@@ -144,7 +144,7 @@ public class MyTransactionalProxyTest {
         }
 
         @Bean
-        public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
             return new DefaultAdvisorAutoProxyCreator();
         }
     }

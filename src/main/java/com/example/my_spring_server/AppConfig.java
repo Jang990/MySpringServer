@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
     // @EnableTransactionManagement, @EnableAspectJAutoProxy 등에 자동 포함되나 내 프로젝트는 그렇지 않으니 수동 등록
     @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
         return new DefaultAdvisorAutoProxyCreator();
     }
 }
