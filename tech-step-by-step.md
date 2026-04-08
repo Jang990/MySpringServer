@@ -61,11 +61,11 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 
 핵심 구간
 
-* 5-1. startTransaction, commit, rollback을 제공하는 TransactionManager 생성 (with ThreadLocal)
-* 5-2. ThreadLocal<Connection>을 관리하는 ConnectionThreadLocal 생성
-* 5-3. DataSource에서 트랜잭션을 지원하도록 구현
-* 5-4. 애플리케이션 레벨에서 Connection 코드 제거
-* 5-5. MyJdbcTemplate에서 커넥션을 직접 받지 않고 MyDataSource를 받도록 변경
+* 4-1. startTransaction, commit, rollback을 제공하는 TransactionManager 생성 (with ThreadLocal)
+* 4-2. ThreadLocal<Connection>을 관리하는 ConnectionThreadLocal 생성
+* 4-3. DataSource에서 트랜잭션을 지원하도록 구현
+* 4-4. 애플리케이션 레벨에서 Connection 코드 제거
+* 4-5. MyJdbcTemplate에서 커넥션을 직접 받지 않고 MyDataSource를 받도록 변경
 
 🎯 목표
 
@@ -80,10 +80,10 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 
 선언적 트랜잭션
 
-* 6-1. @MyTransactional 정의
-* 6-2. 어노테이션 감지 로직 추가
-* 6-3. 트랜잭션 Proxy 로직 추가
-* 6-4. 트랜잭션 적용
+* 5-1. @MyTransactional 정의
+* 5-2. 어노테이션 감지 로직 추가
+* 5-3. 트랜잭션 Proxy 로직 추가
+* 5-4. 트랜잭션 적용
 
 🎯 목표
 
@@ -92,7 +92,84 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 <br>
 <br>
 
-### STEP 6. Connection Pool
+### STEP 6. HTTP 서버 (Mini Tomcat 시작)
+
+웹의 실체
+
+* 6-1. Socket 기반 HTTP 서버
+* 6-2. Request Line 파싱
+* 6-3. Header / Body 파싱
+* 6-4. Response 직접 작성
+
+🎯 목표
+
+“HTTP는 문자열 프로토콜”
+
+<br>
+<br>
+
+### STEP 7. Thread 모델
+
+웹 + 트랜잭션 연결 준비
+
+* 7-1. 요청 1개 = 스레드 1개
+* 7-2. ExecutorService 사용
+
+🎯 목표
+
+“왜 ThreadLocal이 먹히는지”
+
+<br>
+<br>
+
+### STEP 8. Dispatcher (Servlet 역할)
+
+Spring MVC 핵심
+
+* 8-1. 모든 요청의 단일 진입점
+* 8-2. URL → Handler 매핑
+* 8-3. Controller 메서드 호출
+
+🎯 목표
+
+“DispatcherServlet의 본질”
+
+<br>
+<br>
+
+### STEP 9. MVC 구조 완성
+
+Spring MVC 뼈대
+
+* 9-1. Controller
+* 9-2. Argument Resolver (간단히)
+* 9-3. Interceptor
+
+🎯 목표
+
+“웹 요청 흐름 완전 이해”
+
+<br>
+<br>
+
+### STEP 10. 웹 + 트랜잭션 연결 (완성)
+
+최종 퍼즐
+
+* 10-1. 요청 시작
+  → Transaction begin
+* 10-2. Controller 실행
+* 10-3. 예외 시 rollback
+* 10-4. 정상 시 commit
+
+🎯 목표
+
+“@Transactional + Spring MVC 구조 체득”
+
+<br>
+<br>
+
+### STEP 6. Connection Pool (보류)
 
 성능 & 자원 관리 단계
 
@@ -105,83 +182,6 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 🎯 목표
 
 “왜 커넥션 풀 없으면 서비스가 죽는지”
-
-<br>
-<br>
-
-### STEP 7. HTTP 서버 (Mini Tomcat 시작)
-
-웹의 실체
-
-* 7-1. Socket 기반 HTTP 서버
-* 7-2. Request Line 파싱
-* 7-3. Header / Body 파싱
-* 7-4. Response 직접 작성
-
-🎯 목표
-
-“HTTP는 문자열 프로토콜”
-
-<br>
-<br>
-
-### STEP 8. Thread 모델
-
-웹 + 트랜잭션 연결 준비
-
-* 8-1. 요청 1개 = 스레드 1개
-* 8-2. ExecutorService 사용
-
-🎯 목표
-
-“왜 ThreadLocal이 먹히는지”
-
-<br>
-<br>
-
-### STEP 9. Dispatcher (Servlet 역할)
-
-Spring MVC 핵심
-
-* 9-1. 모든 요청의 단일 진입점
-* 9-2. URL → Handler 매핑
-* 9-3. Controller 메서드 호출
-
-🎯 목표
-
-“DispatcherServlet의 본질”
-
-<br>
-<br>
-
-### STEP 10. MVC 구조 완성
-
-Spring MVC 뼈대
-
-* 10-1. Controller
-* 10-2. Argument Resolver (간단히)
-* 10-3. Interceptor
-
-🎯 목표
-
-“웹 요청 흐름 완전 이해”
-
-<br>
-<br>
-
-### STEP 11. 웹 + 트랜잭션 연결 (완성)
-
-최종 퍼즐
-
-* 11-1. 요청 시작
-  → Transaction begin
-* 11-2. Controller 실행
-* 11-3. 예외 시 rollback
-* 11-4. 정상 시 commit
-
-🎯 목표
-
-“@Transactional + Spring MVC 구조 체득”
 
 <br>
 <br>
