@@ -23,11 +23,12 @@ dependencies {
 
 	/* Spring IoC 컨테이너 + Mockito 테스트를 위한 의존성 추가 */
 	// Spring IoC 컨테이너
-	implementation 'org.springframework:spring-context:6.1.5'
+	implementation 'org.springframework:spring-context:6.2.0'
 	// Spring Test (ApplicationContext 로딩, @ExtendWith 등)
-	testImplementation 'org.springframework:spring-test:6.1.5'
+	testImplementation 'org.springframework:spring-test:6.2.0'
 	// Mockito
-	testImplementation 'org.mockito:mockito-core:5.11.0'
+	testImplementation 'org.mockito:mockito-core:5.11.0' // Mockito.mock, @Mock, @InjectionMock ...
+	testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0' // @ExtendWith(MockitoExtension.class)
 	/* ****************************************************** */
 
 	// starter를 안쓰기 때문에 버전을 명시적으로 설정

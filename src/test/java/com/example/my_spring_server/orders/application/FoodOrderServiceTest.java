@@ -1,65 +1,36 @@
 package com.example.my_spring_server.orders.application;
 
-import com.example.my_spring_server.my.DBConfig;
-import com.example.my_spring_server.my.MySQLConfig;
+import com.example.my_spring_server.AppConfig;
 import com.example.my_spring_server.foods.domain.Foods;
 import com.example.my_spring_server.foods.infra.FoodsRepository;
-import com.example.my_spring_server.my.datasource.DriverManagerDataSource;
-import com.example.my_spring_server.my.datasource.MyDataSource;
-import com.example.my_spring_server.my.datasource.transaction.MyTransactionAwareDataSourceProxy;
 import com.example.my_spring_server.my.jdbctemplate.MyJdbcTemplate;
-import com.example.my_spring_server.my.transaction.MyTransactionManager;
-import com.example.my_spring_server.orders.domain.OrderService;
-import com.example.my_spring_server.orders.infra.OrderRepository;
 import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequest;
 import com.example.my_spring_server.orders.presentation.dto.FoodOrderRequests;
 import com.example.my_spring_server.users.domain.Users;
 import com.example.my_spring_server.users.infra.UsersRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringJUnitConfig
 class FoodOrderServiceTest {
-    DBConfig mysqlConfig = new MySQLConfig();
-    MyDataSource myTxDataSource = new MyTransactionAwareDataSourceProxy(new DriverManagerDataSource(mysqlConfig));
+    @Autowired private UsersRepository usersRepository;
+    @Autowired private FoodsRepository foodsRepository;
 
-    OrderService orderService = new OrderService();
-
-    MyJdbcTemplate myJdbcTemplate = new MyJdbcTemplate(myTxDataSource);
-    OrderRepository orderRepository = new OrderRepository(myJdbcTemplate);
-    UsersRepository usersRepository = new UsersRepository(myJdbcTemplate);
-    FoodsRepository foodsRepository = new MockFoodRepository(myJdbcTemplate); // 예외 발생 객체
-
-    FoodOrderService foodOrderService = new FoodOrderService(
-            orderService,
-            orderRepository, foodsRepository, usersRepository,
-            new MyTransactionManager(myTxDataSource)
-    );
-
-    // 롤백 테스트를 위한 예외를 발생시키는 클래스
-    static class MockFoodRepository extends FoodsRepository {
-        public MockFoodRepository(MyJdbcTemplate myJdbcTemplate) {
-            super(myJdbcTemplate);
-        }
-
-        @Override
-        public void updateStock(long userId, int balance) {
-            throw new MockException("트랜잭션 테스트를 위한 예외");
-        }
-
-        static class MockException extends RuntimeException {
-            public MockException(String message) {
-                super(message);
-            }
-        }
-    }
+    @Autowired private FoodOrderService foodOrderService;
 
     @Test
     @DisplayName("주문 트랜잭션 롤백 테스트")
-    void test() {
+    void test1() {
         // given
         Users users = new Users("김아무개", 5000);
         usersRepository.save(users);
@@ -86,6 +57,35 @@ class FoodOrderServiceTest {
         assertEquals(5000, usersRepository.findById(users.getId()).getBalance());
         assertEquals(10, foodsRepository.findById(foods1.getId()).getStock());
         assertEquals(5, foodsRepository.findById(foods2.getId()).getStock());
+    }
+
+    @Configuration
+    @Import(AppConfig.class)
+    static class TestConfig {
+
+        @Bean
+        @Primary
+        public FoodsRepository foodsRepository(MyJdbcTemplate jdbc) {
+            // 롤백 테스트를 위한 예외를 발생시키는 클래스
+            return new MockFoodRepository(jdbc);
+        }
+    }
+
+    static class MockFoodRepository extends FoodsRepository {
+        public MockFoodRepository(MyJdbcTemplate myJdbcTemplate) {
+            super(myJdbcTemplate);
+        }
+
+        @Override
+        public void updateStock(long userId, int balance) {
+            throw new MockException("트랜잭션 테스트를 위한 예외");
+        }
+
+        static class MockException extends RuntimeException {
+            public MockException(String message) {
+                super(message);
+            }
+        }
     }
 
 }

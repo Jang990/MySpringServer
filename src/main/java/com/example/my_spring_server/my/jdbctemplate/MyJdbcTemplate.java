@@ -17,12 +17,10 @@ import java.util.List;
 public class MyJdbcTemplate {
     private final MyDataSource myDataSource;
 
-    public MyJdbcTemplate() {
-        this.myDataSource = new DriverManagerDataSource(new MySQLConfig());
-    }
-
-    public MyJdbcTemplate(MyDataSource myDataSource) {
-        this.myDataSource = myDataSource;
+    public MyJdbcTemplate(
+            MyDataSource myTransactionAwareDataSourceProxy
+    ) {
+        this.myDataSource = myTransactionAwareDataSourceProxy;
     }
 
     public int update(Connection conn, MyPreparedStatementCreator psc, MyKeyHolder myKeyHolder) {

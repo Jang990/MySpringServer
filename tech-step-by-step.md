@@ -76,17 +76,18 @@ JdbcTemplate을 구현하며 Repository 내의 반복 작업 최소화
 <br>
 <br>
 
-### STEP 5. @Transactional
+### STEP 5. Transactional
 
 선언적 트랜잭션
 
 * 6-1. @MyTransactional 정의
-* 6-2. 리플렉션으로 애노테이션 탐지
-* 6-3. 실행 전후에 TX 처리
+* 6-2. 어노테이션 감지 로직 추가
+* 6-3. 트랜잭션 Proxy 로직 추가
+* 6-4. 트랜잭션 적용
 
 🎯 목표
 
-“AOP가 왜 필요한지 체감”
+“트랜잭션 프록시 로직 적용 과정 이해”
 
 <br>
 <br>
